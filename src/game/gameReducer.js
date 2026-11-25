@@ -16,8 +16,8 @@ import {
   evaluateBonusTurn,
   checkPlayerWon,
 } from './turnManager';
-import { PIECE_STATES, BOARD_MODES } from './constants';
-import { CLASSIC_COLOR_CONFIG, EXTENDED_BOARD_DATA } from './boardLayouts';
+import { PIECE_STATES } from './constants';
+import { CLASSIC_COLOR_CONFIG } from './boardLayouts';
 
 export const ACTION_TYPES = {
   START_GAME: 'START_GAME',
@@ -258,8 +258,6 @@ export function gameReducer(state, action) {
         trackIndex: cell.trackIndex,
         row: cell.row,
         col: cell.col,
-        x: cell.x,
-        y: cell.y,
       };
 
       return {
@@ -332,18 +330,6 @@ export function gameReducer(state, action) {
           // Reset captured piece back to base
           newPieces[cap.playerId] = capPieceList.map((p) => {
             if (p.id === cap.pieceId) {
-              if (state.boardMode === BOARD_MODES.EXTENDED) {
-                const secCfg = EXTENDED_BOARD_DATA.sectorConfigs[p.colorKey];
-                const slot = secCfg.baseSlots[p.id];
-                return {
-                  ...p,
-                  state: PIECE_STATES.BASE,
-                  step: -1,
-                  trackIndex: null,
-                  x: slot.x,
-                  y: slot.y,
-                };
-              }
               const cfg = CLASSIC_COLOR_CONFIG[p.colorKey];
               const baseCoord = cfg.baseCoords[p.id];
               return {

@@ -26,7 +26,7 @@ export function Header({
         {/* Mode and Player Count Badges */}
         <div className="header-badges">
           <span className="badge badge-mode">
-            {boardMode === 'extended' ? 'Extended (6-Player)' : 'Classic (4-Player)'}
+            Classic Board
           </span>
           <span className="badge badge-players">
             {playerCount} Players

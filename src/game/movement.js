@@ -1,20 +1,10 @@
-import { PIECE_STATES, BOARD_MODES } from './constants';
-import {
-  generateClassicPlayerPath,
-  generateExtendedPlayerPath,
-} from './boardLayouts';
+import { PIECE_STATES } from './constants';
+import { generateClassicPlayerPath } from './boardLayouts';
 
 /**
  * Get total path length and finish step for a player
  */
-export function getPlayerPathInfo(colorKey, boardMode) {
-  if (boardMode === BOARD_MODES.EXTENDED) {
-    const path = generateExtendedPlayerPath(colorKey);
-    return {
-      path,
-      finishStep: path.length - 1, // 70
-    };
-  }
+export function getPlayerPathInfo(colorKey) {
   const path = generateClassicPlayerPath(colorKey);
   return {
     path,

@@ -90,7 +90,7 @@ describe('App Full Integration Tests', () => {
     expect(screen.queryByText('Official Ludo Rules')).not.toBeInTheDocument();
   });
 
-  it('opens New Game setup modal and switches to 6 players mode', () => {
+  it('opens New Game setup modal, confirms 5 and 6 players are removed, and switches to 2 players mode', () => {
     render(<App />);
 
     const newGameBtn = screen.getByText('New Game');
@@ -98,47 +98,48 @@ describe('App Full Integration Tests', () => {
 
     expect(screen.getByText('New Game Setup')).toBeInTheDocument();
 
-    // Click on 6 players selector
-    const sixBtn = screen.getByRole('button', { name: '6' });
-    fireEvent.click(sixBtn);
+    // Verify 5 and 6 player buttons are NOT in the DOM
+    expect(screen.queryByRole('button', { name: '5' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '6' })).not.toBeInTheDocument();
 
-    expect(screen.getByText(/Extended 6-Sector Hexagonal Board/i)).toBeInTheDocument();
+    // Click on 2 players selector
+    const twoBtn = screen.getByRole('button', { name: '2' });
+    fireEvent.click(twoBtn);
+
+    expect(screen.getByText(/Classic 15×15 Board/i)).toBeInTheDocument();
 
     // Click Start Game
     const startBtn = screen.getByRole('button', { name: /Start Game/i });
     fireEvent.click(startBtn);
 
-    // Verify 6 players are now rendered
-    expect(screen.getByText('Scoreboard (6P)')).toBeInTheDocument();
-    expect(screen.getByText('Player 5')).toBeInTheDocument();
-    expect(screen.getByText('Player 6')).toBeInTheDocument();
-    // In 6-player mode, all sectors are active so INACTIVE badge is not shown
-    expect(screen.queryByText('INACTIVE')).not.toBeInTheDocument();
+    // Verify 2 players are rendered
+    expect(screen.getByText('Scoreboard (2P)')).toBeInTheDocument();
+    expect(screen.getByText('Player 1')).toBeInTheDocument();
+    expect(screen.getByText('Player 2')).toBeInTheDocument();
+    expect(screen.queryByText('Player 3')).not.toBeInTheDocument();
+    expect(screen.queryByText('Player 4')).not.toBeInTheDocument();
   });
 
-  it('switches to 5 players Extended mode and renders Sector 6 as INACTIVE', () => {
+  it('switches to 3 players Classic mode and renders 3 active players', () => {
     render(<App />);
 
     const newGameBtn = screen.getByText('New Game');
     fireEvent.click(newGameBtn);
 
-    // Click on 5 players selector
-    const fiveBtn = screen.getByRole('button', { name: '5' });
-    fireEvent.click(fiveBtn);
-
-    expect(screen.getByText(/Extended 6-Sector Hexagonal Board/i)).toBeInTheDocument();
+    // Click on 3 players selector
+    const threeBtn = screen.getByRole('button', { name: '3' });
+    fireEvent.click(threeBtn);
 
     // Click Start Game
     const startBtn = screen.getByRole('button', { name: /Start Game/i });
     fireEvent.click(startBtn);
 
-    // Verify 5 players are rendered
-    expect(screen.getByText('Scoreboard (5P)')).toBeInTheDocument();
-    expect(screen.getByText('Player 5')).toBeInTheDocument();
-    expect(screen.queryByText('Player 6')).not.toBeInTheDocument();
-
-    // In 5-player mode, the 6th sector base must render 'INACTIVE' label
-    expect(screen.getByText('INACTIVE')).toBeInTheDocument();
+    // Verify 3 players are rendered
+    expect(screen.getByText('Scoreboard (3P)')).toBeInTheDocument();
+    expect(screen.getByText('Player 1')).toBeInTheDocument();
+    expect(screen.getByText('Player 2')).toBeInTheDocument();
+    expect(screen.getByText('Player 3')).toBeInTheDocument();
+    expect(screen.queryByText('Player 4')).not.toBeInTheDocument();
   });
 
   it('allows dev dice roll to automatically bring a pawn out of base onto track', async () => {
@@ -181,5 +182,26 @@ describe('App Full Integration Tests', () => {
     const doneBtn = screen.getByText('Done');
     fireEvent.click(doneBtn);
     expect(screen.queryByText('Pawn Movement Speed')).not.toBeInTheDocument();
+  });
+
+  it('renders classic 4-player board with 4 colored bases and center trophy', () => {
+    const { container } = render(<App />);
+
+    // Classic 15x15 board container
+    const boardGrid = container.querySelector('.classic-board-grid');
+    expect(boardGrid).toBeInTheDocument();
+
+    // 4 base corner boxes
+    expect(container.querySelector('.base-red')).toBeInTheDocument();
+    expect(container.querySelector('.base-green')).toBeInTheDocument();
+    expect(container.querySelector('.base-yellow')).toBeInTheDocument();
+    expect(container.querySelector('.base-blue')).toBeInTheDocument();
+
+    // Center finish trophy
+    expect(container.querySelector('.center-trophy-badge')).toBeInTheDocument();
+
+    // In 4-player mode, 16 pawns should be rendered across 4 bases
+    const pawns = container.querySelectorAll('.pawn-wrapper');
+    expect(pawns.length).toBe(16);
   });
 });

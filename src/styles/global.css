@@ -32,16 +32,6 @@
   --color-yellow-bg: #FEF9C3;
   --color-yellow-text: #854D0E;
 
-  --color-purple: #A855F7;
-  --color-purple-border: #9333EA;
-  --color-purple-bg: #F3E8FF;
-  --color-purple-text: #6B21A8;
-
-  --color-orange: #F97316;
-  --color-orange-border: #EA580C;
-  --color-orange-bg: #FFEDD5;
-  --color-orange-text: #9A3412;
-
   /* Card Shadows */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);

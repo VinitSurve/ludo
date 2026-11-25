@@ -106,7 +106,6 @@ export function App() {
     <div className="ludo-app-root">
       {/* Top Header */}
       <Header
-        boardMode={state.boardMode}
         playerCount={state.playerCount}
         soundMuted={soundMuted}
         onToggleSound={onToggleSound}
@@ -165,7 +164,6 @@ export function App() {
         {/* Center Column: The Central Ludo Board */}
         <div className="board-center-column">
           <GameBoard
-            boardMode={state.boardMode}
             players={state.players}
             activePlayerId={activePlayer?.id}
             pieces={state.pieces}

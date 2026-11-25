@@ -1,45 +1,27 @@
 import { PIECE_STATES, BOARD_MODES, DEFAULT_PLAYERS_CONFIG, DEFAULT_RULES } from './constants';
-import { CLASSIC_COLOR_CONFIG, EXTENDED_BOARD_DATA } from './boardLayouts';
+import { CLASSIC_COLOR_CONFIG } from './boardLayouts';
 
 /**
  * Initialize 4 pieces for a player with initial base coordinates.
  */
-export function initializePlayerPieces(player, boardMode) {
+export function initializePlayerPieces(player) {
   const pieces = [];
   const colorKey = player.colorKey;
+  const cfg = CLASSIC_COLOR_CONFIG[colorKey];
 
-  if (boardMode === BOARD_MODES.EXTENDED) {
-    const secCfg = EXTENDED_BOARD_DATA.sectorConfigs[colorKey];
-    for (let i = 0; i < 4; i++) {
-      const slot = secCfg.baseSlots[i];
-      pieces.push({
-        id: i,
-        playerId: player.id,
-        colorKey,
-        state: PIECE_STATES.BASE,
-        step: -1,
-        trackIndex: null,
-        baseIndex: i,
-        x: slot.x,
-        y: slot.y,
-      });
-    }
-  } else {
-    const cfg = CLASSIC_COLOR_CONFIG[colorKey];
-    for (let i = 0; i < 4; i++) {
-      const baseCoord = cfg.baseCoords[i];
-      pieces.push({
-        id: i,
-        playerId: player.id,
-        colorKey,
-        state: PIECE_STATES.BASE,
-        step: -1,
-        trackIndex: null,
-        baseIndex: i,
-        row: baseCoord.row,
-        col: baseCoord.col,
-      });
-    }
+  for (let i = 0; i < 4; i++) {
+    const baseCoord = cfg?.baseCoords[i] || { row: 0, col: 0 };
+    pieces.push({
+      id: i,
+      playerId: player.id,
+      colorKey,
+      state: PIECE_STATES.BASE,
+      step: -1,
+      trackIndex: null,
+      baseIndex: i,
+      row: baseCoord.row,
+      col: baseCoord.col,
+    });
   }
 
   return pieces;
@@ -49,8 +31,9 @@ export function initializePlayerPieces(player, boardMode) {
  * Creates initial game state for a given player count and options.
  */
 export function createInitialGameState(playerCount = 4, customConfig = {}) {
-  const boardMode = playerCount >= 5 ? BOARD_MODES.EXTENDED : BOARD_MODES.CLASSIC;
-  const defaultPlayers = DEFAULT_PLAYERS_CONFIG[playerCount] || DEFAULT_PLAYERS_CONFIG[4];
+  const validPlayerCount = [2, 3, 4].includes(playerCount) ? playerCount : 4;
+  const boardMode = BOARD_MODES.CLASSIC;
+  const defaultPlayers = DEFAULT_PLAYERS_CONFIG[validPlayerCount] || DEFAULT_PLAYERS_CONFIG[4];
 
   // Merge custom player names/avatars/colors if provided
   const players = defaultPlayers.map((defP, idx) => {
@@ -104,7 +87,7 @@ export function createInitialGameState(playerCount = 4, customConfig = {}) {
         id: 'init',
         timestamp: Date.now(),
         type: 'SYSTEM',
-        message: `Game started with ${playerCount} players in ${boardMode === BOARD_MODES.EXTENDED ? 'Extended' : 'Classic'} mode.`,
+        message: `Game started with ${validPlayerCount} players in Classic mode.`,
       },
     ],
     lastEvent: null,

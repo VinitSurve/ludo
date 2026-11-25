@@ -1,5 +1,5 @@
-import { PIECE_STATES, BOARD_MODES } from './constants';
-import { CLASSIC_SAFE_INDICES, EXTENDED_BOARD_DATA } from './boardLayouts';
+import { PIECE_STATES } from './constants';
+import { CLASSIC_SAFE_INDICES } from './boardLayouts';
 
 /**
  * Checks if a track cell is safe from captures.
@@ -11,10 +11,6 @@ export function isSafeCell(trackIndex, boardMode, rules) {
   if (trackIndex === null || trackIndex === undefined) {
     // Cells off track (home lanes, bases, finish) are always safe
     return true;
-  }
-
-  if (boardMode === BOARD_MODES.EXTENDED) {
-    return EXTENDED_BOARD_DATA.safeIndices.includes(trackIndex);
   }
 
   return CLASSIC_SAFE_INDICES.includes(trackIndex);

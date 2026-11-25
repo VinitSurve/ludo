@@ -4,7 +4,6 @@ import {
   DEFAULT_PLAYERS_CONFIG,
   PLAYER_COLORS,
   AVAILABLE_AVATARS,
-  BOARD_MODES,
 } from '../game/constants';
 
 export function PlayerSetupModal({
@@ -55,8 +54,6 @@ export function PlayerSetupModal({
     onClose();
   };
 
-  const boardMode = playerCount >= 5 ? BOARD_MODES.EXTENDED : BOARD_MODES.CLASSIC;
-
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -71,13 +68,13 @@ export function PlayerSetupModal({
         </div>
 
         <form onSubmit={handleSubmit}>
-          {/* Player Count Selector (2, 3, 4, 5, 6) */}
+          {/* Player Count Selector (2, 3, 4) */}
           <div style={{ marginBottom: '20px' }}>
             <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, marginBottom: '8px', color: '#475569' }}>
               CHOOSE NUMBER OF PLAYERS
             </label>
             <div style={{ display: 'flex', gap: '8px' }}>
-              {[2, 3, 4, 5, 6].map((count) => (
+              {[2, 3, 4].map((count) => (
                 <button
                   key={`cnt-${count}`}
                   type="button"
@@ -101,9 +98,7 @@ export function PlayerSetupModal({
               ))}
             </div>
             <div style={{ marginTop: '6px', fontSize: '0.75rem', color: '#64748B' }}>
-              {boardMode === 'extended'
-                ? '⭐ 5-6 Players: Extended 6-Sector Hexagonal Board with Red, Blue, Green, Yellow, Purple, Orange.'
-                : '⭐ 2-4 Players: Classic 15×15 4-Color Board.'}
+              ⭐ Classic 15×15 Board (Red, Green, Yellow, Blue).
             </div>
           </div>
 
