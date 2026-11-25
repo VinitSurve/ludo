@@ -1,0 +1,141 @@
+/* Main Layout Composition */
+.main-game-layout {
+  max-width: 1400px;
+  margin: 16px auto;
+  padding: 0 24px 32px;
+  display: grid;
+  grid-template-columns: 320px 1fr 300px;
+  gap: 24px;
+  align-items: start;
+}
+
+.sidebar-left {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.board-center-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.sidebar-right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Tablet Layout (<= 1100px) */
+@media (max-width: 1100px) {
+  .main-game-layout {
+    grid-template-columns: 1fr 320px;
+    padding: 0 16px 24px;
+    gap: 16px;
+  }
+
+  .sidebar-left {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+
+  .player-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+
+  .board-center-column {
+    grid-column: 1;
+  }
+
+  .sidebar-right {
+    grid-column: 2;
+  }
+}
+
+/* Mobile Layout (<= 768px) */
+@media (max-width: 768px) {
+  .game-header {
+    padding: 10px 14px;
+  }
+
+  .app-title {
+    font-size: 1.2rem;
+  }
+
+  .header-badges {
+    display: none; /* Keep header compact on mobile */
+  }
+
+  .status-banner {
+    padding: 0 12px;
+    margin-top: 10px;
+  }
+
+  .main-game-layout {
+    display: flex;
+    flex-direction: column;
+    padding: 0 12px 32px;
+    gap: 14px;
+  }
+
+  .board-wrapper {
+    max-width: 100%;
+    border-radius: var(--radius-lg);
+    padding: 4px;
+    border-width: 2px;
+  }
+
+  .sidebar-left {
+    order: 3;
+    width: 100%;
+  }
+
+  .board-center-column {
+    order: 1;
+    width: 100%;
+  }
+
+  .sidebar-right {
+    order: 2;
+    width: 100%;
+  }
+
+  .player-cards-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .player-card {
+    padding: 10px;
+  }
+
+  .dice-panel-card {
+    padding: 16px;
+  }
+
+  .dice-container-3d {
+    width: 80px;
+    height: 80px;
+  }
+
+  .modal-content {
+    padding: 18px;
+  }
+}
+
+/* Very Small Screen (<= 420px) */
+@media (max-width: 420px) {
+  .player-cards-container {
+    grid-template-columns: 1fr;
+  }
+
+  .btn-primary {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+}

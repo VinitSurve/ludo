@@ -1,0 +1,93 @@
+:root {
+  --font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Fredoka', cursive, sans-serif;
+
+  /* Theme Backgrounds */
+  --bg-main: #F8FAFC;
+  --bg-card: #FFFFFF;
+  --bg-card-subtle: #F1F5F9;
+  --border-color: #E2E8F0;
+  --text-main: #0F172A;
+  --text-muted: #64748B;
+  --text-light: #94A3B8;
+
+  /* Player Colors */
+  --color-red: #EF4444;
+  --color-red-border: #DC2626;
+  --color-red-bg: #FEE2E2;
+  --color-red-text: #991B1B;
+
+  --color-blue: #3B82F6;
+  --color-blue-border: #2563EB;
+  --color-blue-bg: #DBEAFE;
+  --color-blue-text: #1E40AF;
+
+  --color-green: #22C55E;
+  --color-green-border: #16A34A;
+  --color-green-bg: #DCFCE7;
+  --color-green-text: #166534;
+
+  --color-yellow: #FACC15;
+  --color-yellow-border: #CA8A04;
+  --color-yellow-bg: #FEF9C3;
+  --color-yellow-text: #854D0E;
+
+  --color-purple: #A855F7;
+  --color-purple-border: #9333EA;
+  --color-purple-bg: #F3E8FF;
+  --color-purple-text: #6B21A8;
+
+  --color-orange: #F97316;
+  --color-orange-border: #EA580C;
+  --color-orange-bg: #FFEDD5;
+  --color-orange-text: #9A3412;
+
+  /* Card Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-board: 0 15px 30px -10px rgba(15, 23, 42, 0.15), 0 0 0 1px rgba(15, 23, 42, 0.05);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  min-height: 100vh;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input {
+  font-family: inherit;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

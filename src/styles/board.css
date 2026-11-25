@@ -1,0 +1,375 @@
+/* Board Container and Aspect Ratio */
+.board-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+  background: #FFFFFF;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-board);
+  padding: 8px;
+  border: 4px solid #F1F5F9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Classic 15x15 Grid */
+.classic-board-grid {
+  display: grid;
+  grid-template-columns: repeat(15, 1fr);
+  grid-template-rows: repeat(15, 1fr);
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 2px solid #CBD5E1;
+  background: #F8FAFC;
+}
+
+/* Board Cell */
+.board-cell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0.5px solid #E2E8F0;
+  transition: background-color 0.15s ease;
+}
+
+.board-cell.track-cell {
+  background-color: #FFFFFF;
+}
+
+.board-cell.safe-cell {
+  background-color: #FFFBEB;
+}
+
+.board-cell.start-cell {
+  background-color: #F8FAFC;
+}
+
+.board-cell.cell-red {
+  background-color: var(--color-red-bg);
+  border-color: #FECACA;
+}
+.board-cell.cell-green {
+  background-color: var(--color-green-bg);
+  border-color: #BBF7D0;
+}
+.board-cell.cell-yellow {
+  background-color: var(--color-yellow-bg);
+  border-color: #FEF08A;
+}
+.board-cell.cell-blue {
+  background-color: var(--color-blue-bg);
+  border-color: #BFDBFE;
+}
+
+/* Star Indicator for Safe Cells */
+.safe-star-icon {
+  position: absolute;
+  width: 55%;
+  height: 55%;
+  color: #94A3B8;
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.safe-cell.cell-red .safe-star-icon { color: var(--color-red); }
+.safe-cell.cell-green .safe-star-icon { color: var(--color-green); }
+.safe-cell.cell-yellow .safe-star-icon { color: var(--color-yellow-border); }
+.safe-cell.cell-blue .safe-star-icon { color: var(--color-blue); }
+
+/* Start Arrow Indicator */
+.start-indicator-arrow {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+/* Classic Bases (6x6 corners) */
+.classic-base-corner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 12%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.classic-base-corner.base-red { background-color: var(--color-red); }
+.classic-base-corner.base-green { background-color: var(--color-green); }
+.classic-base-corner.base-yellow { background-color: var(--color-yellow); }
+.classic-base-corner.base-blue { background-color: var(--color-blue); }
+
+.base-inner-box {
+  width: 100%;
+  height: 100%;
+  background: #FFFFFF;
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.12);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  padding: 8%;
+  gap: 12%;
+}
+
+.base-slot-pocket {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #F1F5F9;
+  border: 2px dashed #CBD5E1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+/* Center Finish Triangles */
+.classic-center-area {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #FFFFFF;
+}
+
+.center-triangle-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.center-trophy-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40%;
+  height: 40%;
+  background: #FFFFFF;
+  border-radius: 50%;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  z-index: 5;
+}
+
+/* =========================================================================
+   EXTENDED 6-PLAYER HEXAGONAL BOARD
+   ========================================================================= */
+.extended-board-svg-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.extended-svg-root {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+/* =========================================================================
+   REALISTIC 3D LUDO PAWN PIECE STYLING
+   ========================================================================= */
+.pawn-wrapper {
+  position: absolute;
+  width: 82%;
+  height: 96%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  user-select: none;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.25s ease;
+  pointer-events: auto;
+}
+
+.pawn-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.pawn-wrapper:hover {
+  transform: translateY(-2px) scale(1.08);
+  z-index: 22;
+}
+
+/* Selectable Pawn State with Glowing Ring and Soft Bounce */
+.pawn-wrapper.pawn-selectable {
+  cursor: pointer;
+  z-index: 30;
+  animation: pawnHopBounce 1.25s infinite ease-in-out;
+  filter: drop-shadow(0 0 6px var(--legal-glow)) drop-shadow(0 0 14px var(--legal-glow));
+}
+
+@keyframes pawnHopBounce {
+  0%, 100% {
+    transform: translateY(0) scale(1.04);
+  }
+  50% {
+    transform: translateY(-6px) scale(1.15);
+  }
+}
+
+/* Finished Pawn State */
+.pawn-wrapper.pawn-finished {
+  filter: drop-shadow(0 0 8px #F59E0B);
+}
+
+/* =========================================================================
+   SPRINGY JUMPING ANIMATION WHEN MOVING PAWNS
+   ========================================================================= */
+.pawn-wrapper.pawn-jumping,
+.extended-pawn-group.pawn-jumping {
+  animation: pawnJumpMove var(--pawn-jump-duration, 0.28s) cubic-bezier(0.28, 0.11, 0.32, 1) forwards !important;
+  z-index: 50 !important;
+}
+
+@keyframes pawnJumpMove {
+  0% {
+    transform: translateY(0) scale(1, 1);
+  }
+  15% {
+    /* Push off / spring compression */
+    transform: translateY(-2px) scale(1.08, 0.92);
+  }
+  38% {
+    /* Initial liftoff */
+    transform: translateY(-13px) scale(0.96, 1.06);
+  }
+  52% {
+    /* Peak mid-air jump arc with elevated shadow */
+    transform: translateY(-26px) scale(1.15, 1.15);
+    filter: drop-shadow(0 16px 12px rgba(15, 23, 42, 0.4));
+  }
+  74% {
+    /* Landing impact squash */
+    transform: translateY(0) scale(1.16, 0.84);
+  }
+  86% {
+    /* Springy rebound hop */
+    transform: translateY(-7px) scale(0.97, 1.03);
+  }
+  100% {
+    /* Settle */
+    transform: translateY(0) scale(1, 1);
+  }
+}
+
+/* Ground shadow dynamic elevation during jump */
+.pawn-wrapper.pawn-jumping .pawn-ground-shadow,
+.extended-pawn-group.pawn-jumping .pawn-ground-shadow {
+  animation: pawnShadowElevation var(--pawn-jump-duration, 0.28s) cubic-bezier(0.28, 0.11, 0.32, 1) forwards;
+}
+
+@keyframes pawnShadowElevation {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.28;
+  }
+  52% {
+    /* As pawn reaches mid-air apex, ground shadow shrinks and softens */
+    transform: scale(0.62);
+    opacity: 0.12;
+  }
+  74% {
+    /* Upon landing, shadow spreads wide */
+    transform: scale(1.22);
+    opacity: 0.42;
+  }
+}
+
+/* =========================================================================
+   BASE ENTRY STRATEGIC HIGHLIGHTS ON ROLLING 6
+   ========================================================================= */
+.base-highlight-pulse {
+  animation: baseYardPulse 1.6s infinite ease-in-out;
+  position: relative;
+  z-index: 15;
+}
+
+@keyframes baseYardPulse {
+  0%, 100% {
+    box-shadow: inset 0 0 10px rgba(245, 158, 11, 0.4), 0 0 8px rgba(245, 158, 11, 0.3);
+  }
+  50% {
+    box-shadow: inset 0 0 26px rgba(245, 158, 11, 0.8), 0 0 20px rgba(245, 158, 11, 0.7);
+  }
+}
+
+.svg-base-highlight-pulse {
+  animation: svgBaseGlow 1.6s infinite ease-in-out;
+}
+
+@keyframes svgBaseGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 6px #F59E0B);
+  }
+  50% {
+    filter: drop-shadow(0 0 18px #F59E0B);
+  }
+}
+
+/* Start square pulse indicator when base entry is available */
+.start-cell-highlight-pulse {
+  animation: startSquarePulse 1.5s infinite ease-in-out !important;
+  z-index: 12 !important;
+}
+
+@keyframes startSquarePulse {
+  0%, 100% {
+    box-shadow: inset 0 0 0 2px #F59E0B, 0 0 8px rgba(245, 158, 11, 0.5);
+  }
+  50% {
+    box-shadow: inset 0 0 0 3px #F59E0B, 0 0 18px rgba(245, 158, 11, 0.95);
+  }
+}
+
+/* Reduced-motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .pawn-wrapper.pawn-jumping,
+  .extended-pawn-group.pawn-jumping,
+  .pawn-wrapper.pawn-selectable,
+  .base-highlight-pulse,
+  .svg-base-highlight-pulse,
+  .start-cell-highlight-pulse {
+    animation: none !important;
+  }
+}
+
+/* Stacking Badge when multiple pawns occupy same cell */
+.pawn-stack-badge {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  background: #0F172A;
+  color: #FFFFFF;
+  font-size: 10px;
+  font-weight: 800;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  border: 1.5px solid #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  z-index: 35;
+}
