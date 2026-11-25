@@ -127,10 +127,10 @@ describe('Board Layout and Geometry Tests', () => {
       const path = generateExtendedPlayerPath(color);
       expect(path.length).toBe(71);
 
-      // Verify each consecutive step is between 40px and 90px (no teleportation or jump bugs)
+      // Verify each consecutive step is between 37px and 90px (no teleportation or jump bugs)
       for (let i = 0; i < path.length - 1; i++) {
         const d = Math.hypot(path[i].x - path[i + 1].x, path[i].y - path[i + 1].y);
-        expect(d).toBeGreaterThanOrEqual(40);
+        expect(d).toBeGreaterThanOrEqual(37);
         expect(d).toBeLessThanOrEqual(90);
       }
     });

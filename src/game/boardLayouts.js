@@ -295,14 +295,16 @@ export const EXTENDED_CELLS_PER_SECTOR = 11;
 export function generateExtendedBoardData() {
   const centerX = 500;
   const centerY = 500;
-  const boardRadius = 480;
-  const centerRadius = 85;
-  const W = 42; // half-width between flanks (arm width ~84px)
+  const boardRadius = 485;
+  const centerRadius = 124;
+  const W = 40; // lateral lane offset between columns
 
-  // Track coordinates: 66 points forming a continuous hexagonal star track
   const trackCoords = [];
   const safeIndices = [];
   const sectorConfigs = {};
+
+  const radii = [150, 202, 254, 306, 358]; // 5 radial steps along each arm
+  const tipRadius = 408;
 
   // 1. Generate sector configs: base centers, 4 slots, 5 home lane coords, finish coord
   for (let s = 0; s < 6; s++) {
@@ -310,72 +312,74 @@ export function generateExtendedBoardData() {
     const thetaArm = (s * 60 - 90) * (Math.PI / 180);
     const thetaBay = (s * 60 + 30 - 90) * (Math.PI / 180);
 
-    const startTrackIndex = s * EXTENDED_CELLS_PER_SECTOR + 6; // Right flank outer (r = 385, offset = +W)
-    const starIndex = s * EXTENDED_CELLS_PER_SECTOR + 2;       // Left flank (r = 265, offset = -W)
+    const startTrackIndex = s * EXTENDED_CELLS_PER_SECTOR + 6; // Right column outer tile (r = 358, offset = +W)
+    const starIndex = s * EXTENDED_CELLS_PER_SECTOR + 2;       // Left column mid tile (r = 254, offset = -W)
     safeIndices.push(startTrackIndex); // Start square is safe
     safeIndices.push(starIndex);       // Star safe square
 
-    // Base circular card located in bay at radius 330 (plenty of clearance from arms and outer hexagon)
-    const baseX = Math.round(centerX + Math.cos(thetaBay) * 330);
-    const baseY = Math.round(centerY + Math.sin(thetaBay) * 330);
+    // Base card located in bay at radius 325
+    const baseR = 325;
+    const baseX = Math.round(centerX + baseR * Math.cos(thetaBay));
+    const baseY = Math.round(centerY + baseR * Math.sin(thetaBay));
 
-    // 4 piece slots in base card
-    const slotOffset = 21;
+    // 4 piece slots in an upright 2x2 arrangement
     const baseSlots = [
-      { x: baseX - slotOffset, y: baseY - slotOffset },
-      { x: baseX + slotOffset, y: baseY - slotOffset },
-      { x: baseX - slotOffset, y: baseY + slotOffset },
-      { x: baseX + slotOffset, y: baseY + slotOffset },
+      { x: baseX - 24, y: baseY - 10 },
+      { x: baseX + 24, y: baseY - 10 },
+      { x: baseX - 24, y: baseY + 36 },
+      { x: baseX + 24, y: baseY + 36 },
     ];
 
     // 5 home lane coords heading inward along arm centerline (offset = 0)
-    // Radii: 340, 285, 230, 175, 120 (spaced by 55px heading straight into center)
+    // Radii: 358, 306, 254, 202, 150 (spaced by 52px heading directly into center finish)
     const homeLaneCoords = [];
     for (let h = 0; h < 5; h++) {
-      const dist = 340 - h * 55;
+      const dist = radii[4 - h];
       homeLaneCoords.push({
-        x: Math.round(centerX + Math.cos(thetaArm) * dist),
-        y: Math.round(centerY + Math.sin(thetaArm) * dist),
+        x: Math.round(centerX + dist * Math.cos(thetaArm)),
+        y: Math.round(centerY + dist * Math.sin(thetaArm)),
+        armAngleDeg: s * 60 - 90,
+        dist,
       });
     }
 
-    // Finish coord inside central trophy area (radius 65 along arm angle)
+    // Finish coord inside central trophy area (radius 85 along arm angle)
     const finishCoord = {
-      x: Math.round(centerX + Math.cos(thetaArm) * 65),
-      y: Math.round(centerY + Math.sin(thetaArm) * 65),
+      x: Math.round(centerX + 85 * Math.cos(thetaArm)),
+      y: Math.round(centerY + 85 * Math.sin(thetaArm)),
+      armAngleDeg: s * 60 - 90,
     };
 
     sectorConfigs[colorKey] = {
       sectorIndex: s,
       colorKey,
       startTrackIndex,
-      entryTrackIndex: (startTrackIndex + 64) % EXTENDED_TRACK_LENGTH, // s * 11 + 4 (left flank outer)
+      entryTrackIndex: (startTrackIndex + 64) % EXTENDED_TRACK_LENGTH, // s * 11 + 4 (left column outer tile)
       baseCenter: { x: baseX, y: baseY },
       baseSlots,
       homeLaneCoords,
       finishCoord,
       angleDeg: s * 60 - 90,
+      bayAngleDeg: s * 60 + 30 - 90,
     };
   }
 
   // 2. Generate 66 track coordinates forming a continuous 6-pointed star circuit
   // 11 cells per sector:
-  // k = 0..4: left flank moving outward towards tip (offset -W)
-  // k = 5: arm tip peak (radius 435, offset 0)
-  // k = 6..10: right flank moving inward towards valley (offset +W)
+  // k = 0..4: left column moving outward towards tip (offset -W)
+  // k = 5: arm tip peak tile (radius 408, offset 0)
+  // k = 6..10: right column moving inward towards valley (offset +W)
   for (let s = 0; s < 6; s++) {
     const thetaArm = (s * 60 - 90) * (Math.PI / 180);
     const cosArm = Math.cos(thetaArm);
     const sinArm = Math.sin(thetaArm);
 
-    const rOut = [145, 205, 265, 325, 385];
-    const rIn = [385, 325, 265, 205, 145];
-
-    // Left flank: 0..4 (offset -W)
+    // Left column: 0..4 (offset -W)
     for (let k = 0; k < 5; k++) {
       const idx = s * EXTENDED_CELLS_PER_SECTOR + k;
-      const x = Math.round(centerX + rOut[k] * cosArm - (-W) * sinArm);
-      const y = Math.round(centerY + rOut[k] * sinArm + (-W) * cosArm);
+      const r = radii[k];
+      const x = Math.round(centerX + r * cosArm - (-W) * sinArm);
+      const y = Math.round(centerY + r * sinArm + (-W) * cosArm);
       trackCoords.push({
         x,
         y,
@@ -384,27 +388,34 @@ export function generateExtendedBoardData() {
         isSafe: safeIndices.includes(idx),
         isStart: false,
         startColor: null,
+        armAngleDeg: s * 60 - 90,
+        r,
+        col: 'left',
       });
     }
 
     // Tip: 5 (offset 0)
     const tipIdx = s * EXTENDED_CELLS_PER_SECTOR + 5;
     trackCoords.push({
-      x: Math.round(centerX + 435 * cosArm),
-      y: Math.round(centerY + 435 * sinArm),
+      x: Math.round(centerX + tipRadius * cosArm),
+      y: Math.round(centerY + tipRadius * sinArm),
       trackIndex: tipIdx,
       sector: s,
       isSafe: safeIndices.includes(tipIdx),
       isStart: false,
       startColor: null,
+      armAngleDeg: s * 60 - 90,
+      r: tipRadius,
+      col: 'tip',
     });
 
-    // Right flank: 6..10 (offset +W)
+    // Right column: 6..10 (offset +W)
     for (let k = 0; k < 5; k++) {
       const idx = s * EXTENDED_CELLS_PER_SECTOR + 6 + k;
+      const r = radii[4 - k];
       const isStart = (k === 0);
-      const x = Math.round(centerX + rIn[k] * cosArm - W * sinArm);
-      const y = Math.round(centerY + rIn[k] * sinArm + W * cosArm);
+      const x = Math.round(centerX + r * cosArm - W * sinArm);
+      const y = Math.round(centerY + r * sinArm + W * cosArm);
       trackCoords.push({
         x,
         y,
@@ -413,6 +424,9 @@ export function generateExtendedBoardData() {
         isSafe: safeIndices.includes(idx),
         isStart,
         startColor: isStart ? EXTENDED_COLORS[s] : null,
+        armAngleDeg: s * 60 - 90,
+        r,
+        col: 'right',
       });
     }
   }
@@ -596,8 +610,8 @@ export function validateBoardLayouts() {
     // Verify consecutive step distances are smooth and without jumps
     for (let s = 0; s < path.length - 1; s++) {
       const d = Math.hypot(path[s].x - path[s + 1].x, path[s].y - path[s + 1].y);
-      if (d < 40 || d > 90) {
-        errors.push(`Irregular step distance on ${color} path from step ${s} to ${s + 1}: ${d.toFixed(1)}px (expected 40-90px).`);
+      if (d < 37 || d > 90) {
+        errors.push(`Irregular step distance on ${color} path from step ${s} to ${s + 1}: ${d.toFixed(1)}px (expected 37-90px).`);
       }
     }
   });

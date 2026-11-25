@@ -166,7 +166,7 @@ export function GameBoard({
   }
 
   // =========================================================================
-  // Extended 6-Player Hexagonal Board (SVG data-driven rendering)
+  // Extended 6-Player Deluxe Tabletop Board (Physical Board-Game Architecture)
   // =========================================================================
   return (
     <div className="board-wrapper">
@@ -176,49 +176,68 @@ export function GameBoard({
           className="extended-svg-root"
         >
           <defs>
-            <radialGradient id="centerGradient" cx="50%" cy="50%" r="50%">
+            <filter id="boardDropShadow" x="-10%" y="-10%" width="125%" height="125%">
+              <feDropShadow dx="0" dy="16" stdDeviation="20" floodColor="#0F172A" floodOpacity="0.22" />
+              <feDropShadow dx="0" dy="4" stdDeviation="6" floodColor="#0F172A" floodOpacity="0.10" />
+            </filter>
+            <filter id="cardShadow" x="-15%" y="-15%" width="130%" height="130%">
+              <feDropShadow dx="0" dy="4" stdDeviation="5" floodColor="#0F172A" floodOpacity="0.15" />
+            </filter>
+            <filter id="tileShadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" floodColor="#0F172A" floodOpacity="0.12" />
+            </filter>
+            <radialGradient id="centerGoldGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#FDE68A" />
+              <stop offset="60%" stopColor="#F59E0B" />
+              <stop offset="100%" stopColor="#D97706" />
+            </radialGradient>
+            <radialGradient id="boardSurfaceGrad" cx="50%" cy="50%" r="60%">
               <stop offset="0%" stopColor="#FFFFFF" />
-              <stop offset="70%" stopColor="#F8FAFC" />
-              <stop offset="100%" stopColor="#E2E8F0" />
+              <stop offset="85%" stopColor="#FBFBFD" />
+              <stop offset="100%" stopColor="#F1F5F9" />
             </radialGradient>
             <filter id="subtleShadow" x="-10%" y="-10%" width="120%" height="120%">
               <feDropShadow dx="0" dy="2" stdDeviation="3" floodOpacity="0.15" />
             </filter>
           </defs>
 
-          {/* Symmetrical Hexagonal Outer Board Outline */}
+          {/* 1. Tabletop Board Outer Bezel & Solid Surface */}
           <polygon
-            points={getHexagonPoints(500, 500, 480)}
-            fill="#FFFFFF"
+            points={getPolygonPoints(500, 500, 485, 6, -90)}
+            fill="url(#boardSurfaceGrad)"
+            stroke="#334155"
+            strokeWidth="12"
+            filter="url(#boardDropShadow)"
+          />
+          <polygon
+            points={getPolygonPoints(500, 500, 475, 6, -90)}
+            fill="none"
             stroke="#CBD5E1"
-            strokeWidth="6"
+            strokeWidth="2"
           />
 
-          {/* Symmetrical Sector Arm Guide Ribbons */}
-          {Object.entries(EXTENDED_BOARD_DATA.sectorConfigs).map(([colorKey, cfg], sIdx) => {
-            const player = players.find((p) => p.colorKey === colorKey);
-            const colorCfg = PLAYER_COLORS[colorKey];
-            return (
-              <polygon
-                key={`arm-guide-${colorKey}`}
-                points={getArmGuidePoints(sIdx)}
-                fill={player ? colorCfg.bg : '#F8FAFC'}
-                opacity={player ? '0.28' : '0.15'}
-                stroke="#E2E8F0"
-                strokeWidth="1.5"
-              />
-            );
-          })}
+          {/* 2. Inlaid Arm Track Beds (recessed channels under tiles) */}
+          {Object.entries(EXTENDED_BOARD_DATA.sectorConfigs).map(([colorKey, cfg], sIdx) => (
+            <polygon
+              key={`arm-bed-${colorKey}`}
+              points={getArmBedPoints(sIdx)}
+              fill="#E2E8F0"
+              stroke="#CBD5E1"
+              strokeWidth="1.5"
+            />
+          ))}
 
-          {/* Center Hexagonal Finish Area with 6 sector wedges */}
+          {/* 3. Central Finish Area (6 colored wedges + golden podium) */}
           <g key="center-finish-group">
             {Object.entries(EXTENDED_BOARD_DATA.sectorConfigs).map(([colorKey, cfg], sIdx) => {
-              const v1 = getHexagonVertex(500, 500, 85, sIdx);
-              const v2 = getHexagonVertex(500, 500, 85, (sIdx + 1) % 6);
               const player = players.find((p) => p.colorKey === colorKey);
+              const isActive = Boolean(player);
               const colorCfg = PLAYER_COLORS[colorKey];
+              const a1 = (sIdx * 60 - 90 - 30) * (Math.PI / 180);
+              const a2 = (sIdx * 60 - 90 + 30) * (Math.PI / 180);
+              const p1 = `${Math.round(500 + 124 * Math.cos(a1))},${Math.round(500 + 124 * Math.sin(a1))}`;
+              const p2 = `${Math.round(500 + 124 * Math.cos(a2))},${Math.round(500 + 124 * Math.sin(a2))}`;
 
-              // Count finished pieces for this sector
               const finishedCount = player
                 ? (pieces[player.id] || []).filter((p) => p.state === 'FINISHED').length
                 : 0;
@@ -226,15 +245,15 @@ export function GameBoard({
               return (
                 <g key={`center-wedge-${colorKey}`}>
                   <polygon
-                    points={`500,500 ${v1.x},${v1.y} ${v2.x},${v2.y}`}
-                    fill={player ? colorCfg.bg : '#F8FAFC'}
-                    stroke="#CBD5E1"
+                    points={`500,500 ${p1} ${p2}`}
+                    fill={isActive ? colorCfg.bg : '#F8FAFC'}
+                    stroke={isActive ? colorCfg.border : '#CBD5E1'}
                     strokeWidth="1.5"
                   />
                   {finishedCount > 0 && (
                     <g transform={`translate(${cfg.finishCoord.x}, ${cfg.finishCoord.y})`}>
-                      <circle cx="0" cy="0" r="10" fill={colorCfg.hex} stroke="#FFFFFF" strokeWidth="1.5" />
-                      <text x="0" y="3.5" textAnchor="middle" fill="#FFFFFF" fontSize="9" fontWeight="bold">
+                      <circle cx="0" cy="0" r="11" fill={colorCfg.hex} stroke="#FFFFFF" strokeWidth="2" filter="url(#subtleShadow)" />
+                      <text x="0" y="4" textAnchor="middle" fill="#FFFFFF" fontSize="10" fontWeight="bold">
                         {finishedCount}
                       </text>
                     </g>
@@ -242,117 +261,203 @@ export function GameBoard({
                 </g>
               );
             })}
-            <circle cx="500" cy="500" r="28" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="2" filter="url(#subtleShadow)" />
+            <polygon
+              points={getPolygonPoints(500, 500, 124, 6, -90)}
+              fill="none"
+              stroke="#94A3B8"
+              strokeWidth="3"
+            />
+            <circle
+              cx="500"
+              cy="500"
+              r="36"
+              fill="url(#centerGoldGrad)"
+              stroke="#B45309"
+              strokeWidth="3"
+              filter="url(#cardShadow)"
+            />
+            <circle
+              cx="500"
+              cy="500"
+              r="30"
+              fill="none"
+              stroke="#FDE68A"
+              strokeWidth="1.5"
+              strokeDasharray="3 2"
+            />
             <text
               x="500"
-              y="507"
+              y="509"
               textAnchor="middle"
-              fontSize="22"
+              fontSize="24"
             >
               🏆
             </text>
           </g>
 
-          {/* Render 6 Base Regions */}
+          {/* 4. Home Base Pods (Upright Deluxe Player Quadrants) */}
           {Object.entries(EXTENDED_BOARD_DATA.sectorConfigs).map(([colorKey, cfg]) => {
             const colorCfg = PLAYER_COLORS[colorKey];
             const player = players.find((p) => p.colorKey === colorKey);
             const isActiveSector = Boolean(player);
             const playerPieceList = player ? pieces[player.id] || [] : [];
+            const bx = cfg.baseCenter.x;
+            const by = cfg.baseCenter.y;
+            const hw = 68;
 
             const isBaseHighlighted = isActiveSector && hasBaseAction && activePlayer?.colorKey === colorKey;
 
             return (
               <g key={`ext-base-${colorKey}`}>
-                {/* Base Outer Circular Card */}
                 {isActiveSector ? (
                   <>
-                    <circle
-                      cx={cfg.baseCenter.x}
-                      cy={cfg.baseCenter.y}
-                      r="62"
-                      fill={colorCfg.hex}
-                      stroke={isBaseHighlighted ? '#F59E0B' : '#FFFFFF'}
-                      strokeWidth={isBaseHighlighted ? '6' : '3'}
-                      className={isBaseHighlighted ? 'svg-base-highlight-pulse' : ''}
-                      filter="url(#subtleShadow)"
-                    />
-                    <circle
-                      cx={cfg.baseCenter.x}
-                      cy={cfg.baseCenter.y}
-                      r="48"
+                    {/* Upright Player Base Card */}
+                    <rect
+                      x={bx - hw}
+                      y={by - hw}
+                      width={hw * 2}
+                      height={hw * 2}
+                      rx="18"
                       fill="#FFFFFF"
+                      stroke={isBaseHighlighted ? '#F59E0B' : colorCfg.border}
+                      strokeWidth={isBaseHighlighted ? '5' : '3.5'}
+                      className={isBaseHighlighted ? 'svg-base-highlight-pulse' : ''}
+                      filter="url(#cardShadow)"
                     />
+                    {/* Header Banner */}
+                    <path
+                      d={`M ${bx - hw} ${by - hw + 18} C ${bx - hw} ${by - hw + 8}, ${bx - hw + 8} ${by - hw}, ${bx - hw + 18} ${by - hw} L ${bx + hw - 18} ${by - hw} C ${bx + hw - 8} ${by - hw}, ${bx + hw} ${by - hw + 8}, ${bx + hw} ${by - hw + 18} L ${bx + hw} ${by - 32} L ${bx - hw} ${by - 32} Z`}
+                      fill={colorCfg.bg}
+                      stroke={colorCfg.border}
+                      strokeWidth="1"
+                    />
+                    <line
+                      x1={bx - hw}
+                      y1={by - 32}
+                      x2={bx + hw}
+                      y2={by - 32}
+                      stroke={colorCfg.border}
+                      strokeWidth="1.5"
+                    />
+                    <text
+                      x={bx}
+                      y={by - 46}
+                      textAnchor="middle"
+                      fontSize="12"
+                      fontWeight="bold"
+                      fill={colorCfg.text}
+                    >
+                      {player?.avatar || colorCfg.avatar} {(player?.name || colorCfg.name).toUpperCase()}
+                    </text>
+
+                    {/* 4 Inset Pawn Sockets */}
+                    {cfg.baseSlots.map((slot, sIdx) => {
+                      const pieceInSlot = playerPieceList.find(
+                        (p) => p.baseIndex === sIdx && p.state === 'BASE'
+                      );
+                      const isLegal = pieceInSlot && player.id === activePlayerId && legalMoves.includes(pieceInSlot.id);
+
+                      return (
+                        <g key={`slot-${colorKey}-${sIdx}`}>
+                          <circle
+                            cx={slot.x}
+                            cy={slot.y}
+                            r="20"
+                            fill="#F8FAFC"
+                            stroke={isLegal ? colorCfg.hex : '#CBD5E1'}
+                            strokeWidth={isLegal ? '3' : '1.5'}
+                            strokeDasharray={isLegal ? 'none' : '3 3'}
+                          />
+                          <circle
+                            cx={slot.x}
+                            cy={slot.y}
+                            r="17"
+                            fill="#F1F5F9"
+                            stroke="#E2E8F0"
+                            strokeWidth="1"
+                          />
+                          {pieceInSlot && (
+                            <ExtendedPawnSvg
+                              cx={slot.x}
+                              cy={slot.y}
+                              colorKey={colorKey}
+                              isLegal={isLegal}
+                              onClick={() => isLegal && onPieceClick && onPieceClick(pieceInSlot.id)}
+                              step={pieceInSlot.step}
+                            />
+                          )}
+                        </g>
+                      );
+                    })}
                   </>
                 ) : (
                   <>
-                    <circle
-                      cx={cfg.baseCenter.x}
-                      cy={cfg.baseCenter.y}
-                      r="62"
+                    {/* 5-Player Mode Neutral Zone Medallion */}
+                    <rect
+                      x={bx - hw}
+                      y={by - hw}
+                      width={hw * 2}
+                      height={hw * 2}
+                      rx="18"
                       fill="#F8FAFC"
-                      stroke="#CBD5E1"
-                      strokeWidth="2"
-                      strokeDasharray="5 4"
+                      stroke="#94A3B8"
+                      strokeWidth="2.5"
+                      strokeDasharray="6 4"
+                      filter="url(#cardShadow)"
                     />
-                    <circle
-                      cx={cfg.baseCenter.x}
-                      cy={cfg.baseCenter.y}
-                      r="48"
-                      fill="#F1F5F9"
+                    <path
+                      d={`M ${bx - hw} ${by - hw + 18} C ${bx - hw} ${by - hw + 8}, ${bx - hw + 8} ${by - hw}, ${bx - hw + 18} ${by - hw} L ${bx + hw - 18} ${by - hw} C ${bx + hw - 8} ${by - hw}, ${bx + hw} ${by - hw + 8}, ${bx + hw} ${by - hw + 18} L ${bx + hw} ${by - 32} L ${bx - hw} ${by - 32} Z`}
+                      fill="#E2E8F0"
+                      stroke="#94A3B8"
+                      strokeWidth="1"
+                    />
+                    <line
+                      x1={bx - hw}
+                      y1={by - 32}
+                      x2={bx + hw}
+                      y2={by - 32}
+                      stroke="#94A3B8"
+                      strokeWidth="1.5"
                     />
                     <text
-                      x={cfg.baseCenter.x}
-                      y={cfg.baseCenter.y + 4}
+                      x={bx}
+                      y={by - 46}
                       textAnchor="middle"
-                      fontSize="11"
+                      fontSize="10"
                       fontWeight="700"
-                      fill="#94A3B8"
+                      fill="#64748B"
                       letterSpacing="1"
                     >
                       INACTIVE
                     </text>
+                    {/* Compass Rose Emblem */}
+                    <circle
+                      cx={bx}
+                      cy={by + 16}
+                      r="32"
+                      fill="#F1F5F9"
+                      stroke="#CBD5E1"
+                      strokeWidth="2"
+                    />
+                    <polygon
+                      points={`${bx},${by - 9} ${bx + 6},${by + 11} ${bx + 25},${by + 16} ${bx + 6},${by + 21} ${bx},${by + 41} ${bx - 6},${by + 21} ${bx - 25},${by + 16} ${bx - 6},${by + 11}`}
+                      fill="#94A3B8"
+                    />
+                    <circle
+                      cx={bx}
+                      cy={by + 16}
+                      r="5"
+                      fill="#FFFFFF"
+                      stroke="#64748B"
+                      strokeWidth="1.5"
+                    />
                   </>
                 )}
-
-                {/* 4 Base Piece Slots */}
-                {cfg.baseSlots.map((slot, sIdx) => {
-                  const pieceInSlot = isActiveSector
-                    ? playerPieceList.find(
-                        (p) => p.baseIndex === sIdx && p.state === 'BASE'
-                      )
-                    : null;
-                  const isLegal = pieceInSlot && player.id === activePlayerId && legalMoves.includes(pieceInSlot.id);
-
-                  return (
-                    <g key={`slot-${colorKey}-${sIdx}`}>
-                      <circle
-                        cx={slot.x}
-                        cy={slot.y}
-                        r="16"
-                        fill={isActiveSector ? '#F8FAFC' : '#E2E8F0'}
-                        stroke={isLegal ? colorCfg.hex : '#CBD5E1'}
-                        strokeWidth={isLegal ? '3' : '1.5'}
-                        strokeDasharray={isLegal ? 'none' : '3 3'}
-                      />
-                      {pieceInSlot && (
-                        <ExtendedPawnSvg
-                          cx={slot.x}
-                          cy={slot.y}
-                          colorKey={colorKey}
-                          isLegal={isLegal}
-                          onClick={() => isLegal && onPieceClick && onPieceClick(pieceInSlot.id)}
-                          step={pieceInSlot.step}
-                        />
-                      )}
-                    </g>
-                  );
-                })}
               </g>
             );
           })}
 
-          {/* Render 6 Home Lanes */}
+          {/* 5. Home Lanes (Center Column of each Arm with inward chevrons) */}
           {Object.entries(EXTENDED_BOARD_DATA.sectorConfigs).map(([colorKey, cfg]) => {
             const colorCfg = PLAYER_COLORS[colorKey];
             const player = players.find((p) => p.colorKey === colorKey);
@@ -368,28 +473,51 @@ export function GameBoard({
                       )
                     : null;
                   const isLegal = pieceOnLane && player.id === activePlayerId && legalMoves.includes(pieceOnLane.id);
+                  const rot = coord.armAngleDeg + 90;
 
                   return (
                     <g key={`hl-${colorKey}-${hIdx}`}>
-                      <circle
-                        cx={coord.x}
-                        cy={coord.y}
-                        r="16"
-                        fill={isActiveSector ? colorCfg.bg : '#F1F5F9'}
-                        stroke={isActiveSector ? colorCfg.border : '#E2E8F0'}
-                        strokeWidth="2"
-                      />
-                      <text
-                        x={coord.x}
-                        y={coord.y + 4}
-                        textAnchor="middle"
-                        fontSize="10"
-                        fontWeight="bold"
-                        fill={isActiveSector ? colorCfg.text : '#CBD5E1'}
-                        opacity={pieceOnLane ? 0 : 0.6}
+                      <g
+                        transform={`translate(${coord.x}, ${coord.y}) rotate(${rot})`}
+                        filter="url(#tileShadow)"
                       >
-                        •
-                      </text>
+                        {isActiveSector ? (
+                          <>
+                            <rect
+                              x="-18"
+                              y="-23"
+                              width="36"
+                              height="46"
+                              rx="6"
+                              fill={colorCfg.hex}
+                              stroke={colorCfg.accent}
+                              strokeWidth="2"
+                            />
+                            <path
+                              d="M -7 -4 L 0 5 L 7 -4"
+                              fill="none"
+                              stroke="#FFFFFF"
+                              strokeWidth="3"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </>
+                        ) : (
+                          <>
+                            <rect
+                              x="-18"
+                              y="-23"
+                              width="36"
+                              height="46"
+                              rx="6"
+                              fill="#F1F5F9"
+                              stroke="#CBD5E1"
+                              strokeWidth="1.5"
+                            />
+                            <circle cx="0" cy="0" r="3" fill="#94A3B8" />
+                          </>
+                        )}
+                      </g>
                       {pieceOnLane && (
                         <ExtendedPawnSvg
                           cx={coord.x}
@@ -407,9 +535,8 @@ export function GameBoard({
             );
           })}
 
-          {/* Render 66 Track Cells */}
+          {/* 6. 66 Connected Movement Track Tiles */}
           {EXTENDED_BOARD_DATA.trackCoords.map((coord, idx) => {
-            // Find pieces on this track index
             const piecesOnCell = [];
             Object.values(pieces).forEach((pList) => {
               pList.forEach((p) => {
@@ -426,40 +553,98 @@ export function GameBoard({
             const startPlayer = startColorKey ? players.find((p) => p.colorKey === startColorKey) : null;
             const isStartActive = Boolean(startPlayer);
             const cellColor = (coord.isStart && isStartActive) ? PLAYER_COLORS[startColorKey] : null;
+            const rot = coord.armAngleDeg + 90;
 
             return (
               <g key={`track-ext-${idx}`}>
-                <circle
-                  cx={coord.x}
-                  cy={coord.y}
-                  r="16"
-                  fill={cellColor ? cellColor.bg : coord.isSafe ? '#FEF9C3' : '#FFFFFF'}
-                  stroke={cellColor ? cellColor.border : '#CBD5E1'}
-                  strokeWidth="2"
-                />
-
-                {/* Star icon for safe squares */}
-                {coord.isSafe && !coord.isStart && (
-                  <text
-                    x={coord.x}
-                    y={coord.y + 5}
-                    textAnchor="middle"
-                    fontSize="13"
-                    fill="#CA8A04"
-                  >
-                    ★
-                  </text>
-                )}
-
-                {/* Start indicator dot */}
-                {coord.isStart && (
-                  <circle
-                    cx={coord.x}
-                    cy={coord.y}
-                    r="5"
-                    fill={cellColor ? cellColor.hex : '#CBD5E1'}
-                  />
-                )}
+                <g
+                  transform={`translate(${coord.x}, ${coord.y}) rotate(${rot})`}
+                  filter="url(#tileShadow)"
+                >
+                  {coord.isStart && isStartActive ? (
+                    <>
+                      {/* Start Tile with Player Color, dot & directional arrow */}
+                      <rect
+                        x="-18"
+                        y="-23"
+                        width="36"
+                        height="46"
+                        rx="6"
+                        fill={cellColor.bg}
+                        stroke={cellColor.border}
+                        strokeWidth="2.5"
+                      />
+                      <circle cx="0" cy="-6" r="9" fill={cellColor.hex} stroke="#FFFFFF" strokeWidth="1.5" />
+                      <path
+                        d="M -5 6 L 0 13 L 5 6"
+                        fill="none"
+                        stroke={cellColor.border}
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </>
+                  ) : coord.isSafe ? (
+                    <>
+                      {/* Safe Star Tile */}
+                      <rect
+                        x="-18"
+                        y="-23"
+                        width="36"
+                        height="46"
+                        rx="6"
+                        fill="#FEF9C3"
+                        stroke="#F59E0B"
+                        strokeWidth="2"
+                      />
+                      <text
+                        x="0"
+                        y="5"
+                        textAnchor="middle"
+                        fontSize="16"
+                        fontWeight="bold"
+                        fill="#D97706"
+                      >
+                        ★
+                      </text>
+                    </>
+                  ) : coord.col === 'tip' ? (
+                    <>
+                      {/* Tip Crossover Tile */}
+                      <rect
+                        x="-18"
+                        y="-23"
+                        width="36"
+                        height="46"
+                        rx="8"
+                        fill="#FFFFFF"
+                        stroke="#CBD5E1"
+                        strokeWidth="2"
+                      />
+                      <path
+                        d="M -7 -2 Q 0 -9 7 -2 L 5 -5 M 7 -2 L 3 1"
+                        fill="none"
+                        stroke="#64748B"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                    </>
+                  ) : (
+                    <>
+                      {/* Standard Connected Track Tile */}
+                      <rect
+                        x="-18"
+                        y="-23"
+                        width="36"
+                        height="46"
+                        rx="6"
+                        fill="#FFFFFF"
+                        stroke="#CBD5E1"
+                        strokeWidth="1.5"
+                      />
+                    </>
+                  )}
+                </g>
 
                 {/* Piece on Track */}
                 {topPiece && (
@@ -577,37 +762,30 @@ function ExtendedPawnSvg({ cx, cy, colorKey, isLegal, onClick, count = 1, step }
   );
 }
 
-// Helper: Calculate polygon points for regular hexagon
-function getHexagonPoints(cx, cy, r) {
+// Helper: Calculate polygon points for regular polygons
+function getPolygonPoints(cx, cy, r, sides = 6, offsetDeg = -90) {
   const points = [];
-  for (let i = 0; i < 6; i++) {
-    const angle = (i * 60 - 90) * (Math.PI / 180);
-    const x = Math.round(cx + Math.cos(angle) * r);
-    const y = Math.round(cy + Math.sin(angle) * r);
-    points.push(`${x},${y}`);
+  for (let i = 0; i < sides; i++) {
+    const angle = (i * (360 / sides) + offsetDeg) * (Math.PI / 180);
+    points.push(`${Math.round(cx + Math.cos(angle) * r)},${Math.round(cy + Math.sin(angle) * r)}`);
   }
   return points.join(' ');
 }
 
-// Helper: Calculate a specific vertex of regular hexagon
-function getHexagonVertex(cx, cy, r, index) {
-  const angle = (index * 60 - 90) * (Math.PI / 180);
-  return {
-    x: Math.round(cx + Math.cos(angle) * r),
-    y: Math.round(cy + Math.sin(angle) * r),
-  };
-}
-
-// Helper: Calculate sector arm guide polygon points
-function getArmGuidePoints(s) {
+// Helper: Calculate sector arm bed polygon points (inlaid channel)
+function getArmBedPoints(s) {
   const theta = (s * 60 - 90) * (Math.PI / 180);
   const cos = Math.cos(theta);
   const sin = Math.sin(theta);
-  const p1 = `${Math.round(500 + 85 * cos - (-56) * sin)},${Math.round(500 + 85 * sin + (-56) * cos)}`;
-  const p2 = `${Math.round(500 + 410 * cos - (-56) * sin)},${Math.round(500 + 410 * sin + (-56) * cos)}`;
-  const p3 = `${Math.round(500 + 458 * cos)},${Math.round(500 + 458 * sin)}`;
-  const p4 = `${Math.round(500 + 410 * cos - 56 * sin)},${Math.round(500 + 410 * sin + 56 * cos)}`;
-  const p5 = `${Math.round(500 + 85 * cos - 56 * sin)},${Math.round(500 + 85 * sin + 56 * cos)}`;
+  const hw = 58;
+  const rIn = 120;
+  const rOut = 390;
+  const rTip = 435;
+  const p1 = `${Math.round(500 + rIn * cos - (-hw) * sin)},${Math.round(500 + rIn * sin + (-hw) * cos)}`;
+  const p2 = `${Math.round(500 + rOut * cos - (-hw) * sin)},${Math.round(500 + rOut * sin + (-hw) * cos)}`;
+  const p3 = `${Math.round(500 + rTip * cos)},${Math.round(500 + rTip * sin)}`;
+  const p4 = `${Math.round(500 + rOut * cos - hw * sin)},${Math.round(500 + rOut * sin + hw * cos)}`;
+  const p5 = `${Math.round(500 + rIn * cos - hw * sin)},${Math.round(500 + rIn * sin + hw * cos)}`;
   return `${p1} ${p2} ${p3} ${p4} ${p5}`;
 }
 
