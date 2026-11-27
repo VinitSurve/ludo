@@ -56,24 +56,18 @@ describe('App Full Integration Tests', () => {
     expect(screen.getByText('Scoreboard (4P)')).toBeInTheDocument();
   });
 
-  it('allows manual score adjustments for players', () => {
+  it('displays player piece distribution on the scoreboard without manual score controls', () => {
     render(<App />);
 
-    const addButtons = screen.getAllByLabelText('Add 1 point');
-    expect(addButtons.length).toBe(4);
+    // Verify piece distribution stats are displayed
+    expect(screen.getAllByText('Base').length).toBe(4);
+    expect(screen.getAllByText('Board').length).toBe(4);
+    expect(screen.getAllByText('Home').length).toBe(4);
 
-    // Click +1 on Player 1
-    fireEvent.click(addButtons[0]);
-    // Click +1 again
-    fireEvent.click(addButtons[0]);
-
-    // Check that score displays 2
-    expect(screen.getAllByText('Score:')[0].parentElement).toHaveTextContent('2');
-
-    // Click -1
-    const minusButtons = screen.getAllByLabelText('Subtract 1 point');
-    fireEvent.click(minusButtons[0]);
-    expect(screen.getAllByText('Score:')[0].parentElement).toHaveTextContent('1');
+    // Verify manual score edit buttons are NOT present in the DOM
+    expect(screen.queryByLabelText('Add 1 point')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Subtract 1 point')).not.toBeInTheDocument();
+    expect(screen.queryByText('Reset Scores')).not.toBeInTheDocument();
   });
 
   it('opens and closes the Rules modal', () => {

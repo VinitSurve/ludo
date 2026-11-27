@@ -1,70 +1,28 @@
 import { describe, it, expect } from 'vitest';
 import { gameReducer, ACTION_TYPES } from '../src/game/gameReducer';
 import { createInitialGameState } from '../src/game/gameUtils';
+import { calculatePlayerPieceStats } from '../src/game/turnManager';
 
 describe('Scoreboard & Undo Tests', () => {
-  it('correctly increments and decrements manual scores without going below 0', () => {
-    let state = createInitialGameState(4);
-    expect(state.scores[1]).toBe(0);
-
-    // +1
-    state = gameReducer(state, {
-      type: ACTION_TYPES.ADJUST_SCORE,
-      payload: { playerId: 1, delta: 1 },
-    });
-    expect(state.scores[1]).toBe(1);
-
-    // +1 again
-    state = gameReducer(state, {
-      type: ACTION_TYPES.ADJUST_SCORE,
-      payload: { playerId: 1, delta: 1 },
-    });
-    expect(state.scores[1]).toBe(2);
-
-    // -1
-    state = gameReducer(state, {
-      type: ACTION_TYPES.ADJUST_SCORE,
-      payload: { playerId: 1, delta: -1 },
-    });
-    expect(state.scores[1]).toBe(1);
-
-    // -5: score must NOT go below 0
-    state = gameReducer(state, {
-      type: ACTION_TYPES.ADJUST_SCORE,
-      payload: { playerId: 1, delta: -5 },
-    });
-    expect(state.scores[1]).toBe(0);
+  it('correctly calculates player piece statistics for scoreboard', () => {
+    const pieces = [
+      { id: 0, state: 'BASE', position: -1 },
+      { id: 1, state: 'TRACK', position: 5 },
+      { id: 2, state: 'HOME_LANE', position: 53 },
+      { id: 3, state: 'FINISHED', position: 56 },
+    ];
+    const stats = calculatePlayerPieceStats(pieces);
+    expect(stats.inBase).toBe(1);
+    expect(stats.onBoard).toBe(2);
+    expect(stats.finished).toBe(1);
   });
 
-  it('resets a single player score', () => {
-    let state = createInitialGameState(4);
-    state.scores[1] = 10;
-    state.scores[2] = 5;
-
-    state = gameReducer(state, {
-      type: ACTION_TYPES.RESET_PLAYER_SCORE,
-      payload: { playerId: 1 },
-    });
-
-    expect(state.scores[1]).toBe(0);
-    expect(state.scores[2]).toBe(5); // Player 2 intact
-  });
-
-  it('resets all player scores to 0', () => {
-    let state = createInitialGameState(4);
-    state.scores[1] = 10;
-    state.scores[2] = 8;
-    state.scores[3] = 4;
-    state.scores[4] = 2;
-
-    state = gameReducer(state, {
-      type: ACTION_TYPES.RESET_ALL_SCORES,
-    });
-
-    expect(state.scores[1]).toBe(0);
-    expect(state.scores[2]).toBe(0);
-    expect(state.scores[3]).toBe(0);
-    expect(state.scores[4]).toBe(0);
+  it('correctly tracks all pieces in base initially', () => {
+    const state = createInitialGameState(4);
+    const p1Stats = calculatePlayerPieceStats(state.pieces[1]);
+    expect(p1Stats.inBase).toBe(4);
+    expect(p1Stats.onBoard).toBe(0);
+    expect(p1Stats.finished).toBe(0);
   });
 
   it('faithfully restores previous state using Undo', () => {

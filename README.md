@@ -84,10 +84,8 @@ A 3-player configuration utilizing Red, Green, and Yellow quadrants with balance
 - **Home Lane & Exact Finish:** Pawns enter their dedicated colored home lane, requiring an exact roll to land on the center trophy.
 - **Bonus Turns:** Awarded automatically on rolling a 6, capturing an opponent, or finishing a pawn.
 
-### 📊 Scoreboard, Manual Scoring & Full Undo
+### 📊 Scoreboard & Full Undo
 - **Live Scoreboard:** Real-time counters showing pawns *In Base*, *On Board*, and *Finished (X/4)*.
-- **Manual Score Tracking:** Quick `+1`, `-1`, and `Reset` buttons per player.
-- **Global Reset Protection:** Modal confirmation before wiping scoreboard points.
 - **Full Snapshot Undo:** Instant undo functionality that restores board pieces, active player, dice state, and history.
 
 ### 🔊 Synthesized Web Audio API Sound Effects
@@ -146,14 +144,13 @@ Mini Project - Ludo/
 ├── src/
 │   ├── components/               # Pure presentation UI components
 │   │   ├── BoardCell.jsx         # 15x15 classic cell with safe stars & start arrows
-│   │   ├── ConfirmModal.jsx      # Confirmation dialog for score resets
 │   │   ├── Dice.jsx              # 3D animated dice with pips and roll controls
 │   │   ├── GameBoard.jsx         # Classic 15x15 Ludo board with 4 colored bases
-│   │   ├── GameControls.jsx      # Undo, Reset Scores, and Rules quick actions
+│   │   ├── GameControls.jsx      # Undo move control
 │   │   ├── GameStatus.jsx        # Dynamic turn, roll, and event banner
 │   │   ├── Header.jsx            # Top navbar, badges, sound toggle, new game
 │   │   ├── Piece.jsx             # 3D contoured pawn piece with realistic shadows
-│   │   ├── PlayerCard.jsx        # Player status, piece counters, and score controls
+│   │   ├── PlayerCard.jsx        # Player status, avatar, and piece distribution counters
 │   │   ├── PlayerSetupModal.jsx  # New game configuration modal (2-4 players)
 │   │   ├── RecentMoves.jsx       # Event history log
 │   │   ├── RulesModal.jsx        # Complete game rules modal
@@ -190,7 +187,7 @@ Mini Project - Ludo/
 │   ├── captures.test.js          # Track captures and safe square protection tests
 │   ├── movement.test.js          # Legal move calculations and exact finish tests
 │   ├── pawn.test.jsx             # Pawn rendering and interactive state tests
-│   ├── scoreboard.test.js        # Scoreboard tracking and manual adjustment tests
+│   ├── scoreboard.test.js        # Scoreboard tracking and snapshot undo tests
 │   ├── turns.test.js             # Turn rotations and bonus turn tests
 │   └── winning.test.js           # Winner detection and 4-piece finish tests
 │

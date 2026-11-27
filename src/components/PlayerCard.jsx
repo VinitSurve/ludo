@@ -1,5 +1,4 @@
 import React from 'react';
-import { Plus, Minus, RotateCcw } from 'lucide-react';
 import { PLAYER_COLORS } from '../game/constants';
 import { calculatePlayerPieceStats } from '../game/turnManager';
 
@@ -7,9 +6,6 @@ export function PlayerCard({
   player,
   isActive = false,
   pieces = [],
-  score = 0,
-  onAdjustScore,
-  onResetScore,
 }) {
   const colorCfg = PLAYER_COLORS[player.colorKey] || PLAYER_COLORS.red;
   const stats = calculatePlayerPieceStats(pieces);
@@ -69,45 +65,6 @@ export function PlayerCard({
           <div className="val" style={{ color: stats.finished === 4 ? '#16A34A' : 'inherit' }}>
             {stats.finished}/4
           </div>
-        </div>
-      </div>
-
-      {/* Manual Score Controls */}
-      <div className="manual-score-row">
-        <div className="score-display-box">
-          <span className="score-label">Score:</span>
-          <span className="score-num">{score}</span>
-        </div>
-
-        <div className="score-btn-group">
-          <button
-            type="button"
-            className="btn-score-ctrl"
-            onClick={() => onAdjustScore(player.id, 1)}
-            title="Add 1 point"
-            aria-label="Add 1 point"
-          >
-            <Plus size={14} />
-          </button>
-          <button
-            type="button"
-            className="btn-score-ctrl"
-            onClick={() => onAdjustScore(player.id, -1)}
-            disabled={score <= 0}
-            title="Subtract 1 point"
-            aria-label="Subtract 1 point"
-            style={{ opacity: score <= 0 ? 0.4 : 1 }}
-          >
-            <Minus size={14} />
-          </button>
-          <button
-            type="button"
-            className="btn-score-ctrl btn-score-reset"
-            onClick={() => onResetScore(player.id)}
-            title="Reset score"
-          >
-            Reset
-          </button>
         </div>
       </div>
     </div>

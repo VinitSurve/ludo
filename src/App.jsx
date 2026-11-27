@@ -12,7 +12,6 @@ import { PlayerSetupModal } from './components/PlayerSetupModal';
 import { RulesModal } from './components/RulesModal';
 import { SettingsModal } from './components/SettingsModal';
 import { WinnerModal } from './components/WinnerModal';
-import { ConfirmModal } from './components/ConfirmModal';
 
 import './styles/global.css';
 import './styles/board.css';
@@ -38,9 +37,6 @@ export function App() {
     rollDice,
     movePiece,
     passTurn,
-    adjustScore,
-    resetPlayerScore,
-    resetAllScores,
     undoMove,
     startNewGame,
     rematch,
@@ -50,12 +46,6 @@ export function App() {
   const [showSetupModal, setShowSetupModal] = useState(false);
   const [showRulesModal, setShowRulesModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
-  const [confirmModalState, setConfirmModalState] = useState({
-    isOpen: false,
-    title: '',
-    message: '',
-    onConfirm: () => {},
-  });
 
   const activePlayer = state.players[state.currentPlayerIndex];
 
@@ -94,19 +84,6 @@ export function App() {
       };
     }
   }, [state, startNewGame, rollDice, movePiece]);
-
-  // Confirm Reset All Scores
-  const handlePromptResetAllScores = () => {
-    setConfirmModalState({
-      isOpen: true,
-      title: 'Reset All Scores?',
-      message: 'This will reset the manual score of all players back to 0. Board pieces will NOT be affected.',
-      onConfirm: () => {
-        resetAllScores();
-        setConfirmModalState((prev) => ({ ...prev, isOpen: false }));
-      },
-    });
-  };
 
   return (
     <div className="ludo-app-root">
@@ -150,20 +127,14 @@ export function App() {
                 player={player}
                 isActive={idx === state.currentPlayerIndex && state.gameStatus !== 'GAME_OVER'}
                 pieces={state.pieces[player.id]}
-                score={state.scores[player.id] || 0}
-                onAdjustScore={adjustScore}
-                onResetScore={resetPlayerScore}
               />
             ))}
           </div>
 
-          {/* Controls: Undo & Reset Scores */}
+          {/* Controls: Undo */}
           <GameControls
             canUndo={state.undoStack.length > 0}
             onUndo={undoMove}
-            onResetAllScores={handlePromptResetAllScores}
-            onOpenRules={() => setShowRulesModal(true)}
-            onOpenSettings={() => setShowSettingsModal(true)}
           />
         </div>
 
@@ -225,14 +196,6 @@ export function App() {
         winner={state.winner}
         onRematch={rematch}
         onNewGame={() => setShowSetupModal(true)}
-      />
-
-      <ConfirmModal
-        isOpen={confirmModalState.isOpen}
-        title={confirmModalState.title}
-        message={confirmModalState.message}
-        onConfirm={confirmModalState.onConfirm}
-        onCancel={() => setConfirmModalState((prev) => ({ ...prev, isOpen: false }))}
       />
     </div>
   );
