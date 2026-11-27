@@ -142,24 +142,23 @@ describe('App Full Integration Tests', () => {
     expect(screen.queryByText('Player 4')).not.toBeInTheDocument();
   });
 
-  it('allows dev dice roll to automatically bring a pawn out of base onto track', async () => {
+  it('allows clicking the Roll Dice button to roll and transition game turn', async () => {
     render(<App />);
 
-    // Toggle Dev Dice Simulator
-    const devToggle = screen.getByText('Show');
-    fireEvent.click(devToggle);
+    const rollBtn = screen.getByRole('button', { name: /Roll Dice/i });
+    expect(rollBtn).toBeInTheDocument();
+    fireEvent.click(rollBtn);
 
-    // Click '6' in dev simulator
-    const devSixBtn = screen.getByTitle('Force roll 6');
-    fireEvent.click(devSixBtn);
+    // Roll animation is triggered
+    expect(screen.getByText(/Rolling\.\.\./i)).toBeInTheDocument();
 
-    // Wait for roll animation timeout (280ms)
+    // Wait for roll animation timeout (700ms)
     await act(async () => {
-      await new Promise((r) => setTimeout(r, 350));
+      await new Promise((r) => setTimeout(r, 800));
     });
 
-    // Player 1 rolled 6, and only one legal action exists (bringing pawn from base) -> auto-move executes!
-    expect(screen.getByRole('heading', { name: /Rolled a 6/i })).toBeInTheDocument();
+    // Verify dice has been rolled and displays a rolled result
+    expect(screen.getByText(/Rolled:/i)).toBeInTheDocument();
   });
 
   it('renders movement speed configuration in settings modal', () => {

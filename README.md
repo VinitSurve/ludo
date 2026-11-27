@@ -1,150 +1,218 @@
 # 🎲 Ludo Master — Royal Casual Board Game
 
-A complete, production-quality, responsive single-page Ludo board game built with **React**, **Vite**, and **JavaScript**, supporting **2 to 6 local players** across two distinct mathematical board variants (**Classic 15×15** and **Extended 6-Sector Hexagonal**).
+A complete, production-quality, responsive single-page Ludo board game built with **React**, **Vite**, and **JavaScript**, supporting **2, 3, and 4 local players** on the authentic, traditional **Classic 15×15 Board**.
+
+![Ludo Master - 4-Player Game](docs/screenshots/main-game-4-player.png)
+
+---
+
+## 📸 Screenshots Gallery
+
+All screenshots below are captured directly from the live running application in a high-resolution browser viewport.
+
+### 1. Main Game (4 Players)
+The primary classic 15×15 board featuring all four colored quadrants (Red, Green, Yellow, Blue), the live Scoreboard, 3D animated dice panel, and recent move history.
+
+![Ludo Master - 4-Player Game](docs/screenshots/main-game-4-player.png)
+
+---
+
+### 2. New Game & Player Setup
+Configure 2, 3, or 4 local players, assign custom player names, choose personal avatars from the emoji picker, and verify color allocations.
+
+![New Game Setup Modal](docs/screenshots/new-game-setup.png)
+
+---
+
+### 3. Gameplay in Progress
+Real interactive gameplay with pawns traversing the circuit. Highlighting movable pieces, active turns, and real-time piece tracking on the scoreboard.
+
+![Gameplay in Progress](docs/screenshots/gameplay-in-progress.png)
+
+---
+
+### 4. Strategic Choice & Piece Selection
+When rolling a 6 with pawns both on the board and in the base, players are presented with a clear strategic decision: advance an active track pawn or use the **"✨ Bring a Pawn Out"** action.
+
+![Piece Selection on Rolling 6](docs/screenshots/piece-selection.png)
+
+---
+
+### 5. Victory Celebration
+When a player finishes all 4 pawns in the central home triangle, a triumphant celebration modal displays the champion with multi-angle confetti animations and options for a rematch or new game.
+
+![Winner Screen](docs/screenshots/winner-screen.png)
+
+---
+
+### 6. 2-Player Game Mode
+A dedicated 2-player configuration utilizing diagonally opposite bases (Red and Yellow) for classic competitive balance, with inactive bases cleanly rendered.
+
+![2-Player Mode](docs/screenshots/game-2-player.png)
+
+---
+
+### 7. 3-Player Game Mode
+A 3-player configuration utilizing Red, Green, and Yellow quadrants with balanced spacing and full scoreboard tracking.
+
+![3-Player Mode](docs/screenshots/game-3-player.png)
 
 ---
 
 ## ✨ Features & Highlights
 
-### 🎮 Player Modes (2 to 6 Players)
-- **2–4 Players (Classic Mode):** Traditional 15×15 Ludo grid with 52 track cells, 4 colored home bases (Red, Green, Yellow, Blue), safe squares, colored home lanes, and center finish.
-- **5–6 Players (Extended Mode):** Symmetrical 6-sector hexagonal board with 66 track cells, 6 home bases (Red, Blue, Green, Yellow, Purple, Orange), 6 dedicated entry paths, home lanes, and central finish.
-- **Player Customization:** Configure custom player names, select from 12 avatars (🦁, 🐺, 🐲, 🦅, 🦄, 🐯, etc.), and view dynamic player cards.
+### 🎮 Flexible Game Modes (2, 3, & 4 Players)
+- **Traditional 15×15 Ludo Grid:** Standard 52-cell track with 4 colored home bases (Red, Green, Yellow, Blue), 8 safe squares, 4 colored home lanes, and central finish.
+- **Player Customization:** Customize player names, pick from 12 avatars (🦁, 🐺, 🐲, 🦅, 🦄, 🐯, etc.), and view dynamic player status cards.
 
 ### ♟️ Realistic 3D Ludo Pawns
-- **Physical Board-Game Pawn Silhouette:** Beautifully shaped pawns featuring a spherical head with specular gloss reflection, narrow collar neck, flared bell body, stepped circular pedestal base, and realistic soft contact drop shadow.
-- **6 Vibrant Color Variants:** Custom gradients for Red, Blue, Green, Yellow, Purple, and Orange pawns.
-- **Dynamic Interactive States:**
-  - *Normal:* Sits centered in board cell with grounding contact shadow.
-  - *Selectable:* Soft glowing aura (`drop-shadow`) and smooth bounce hop animation (`@keyframes pawnHopBounce`) with pointer cursor.
-  - *Finished:* Radiant golden finish glow with celebration effects.
+- **Board-Game Silhouette:** Beautifully contoured plastic pawn silhouette featuring a spherical head with specular gloss reflection, narrow neck collar, bell body, stepped circular pedestal base, and contact drop shadow.
+- **Vibrant Color Schemes:** Hand-crafted gradients and border styling for Red, Green, Yellow, and Blue pawns.
+- **Interactive Visual States:**
+  - *Normal:* Sits centered in its board pocket with a soft grounding shadow.
+  - *Selectable:* Glowing aura and rhythmic bounce hop animation (`pawnHopBounce`).
+  - *Jumping Arc:* Springy step-by-step jump animation (`pawnJumpMove`) with dynamic shadow elevation.
   - *Stacking Badge:* High-contrast count badge when multiple pawns share a safe square.
 
-### ⚡ Intelligent Automatic Move Selection
-- **Single Legal Move Automation:** If exactly one pawn can legally move after a roll, the game engine automatically moves it without requiring unnecessary clicks or confirmation prompts.
-- **Base Pawn Management on Rolling 6:**
-  - If no pawns are on the board, rolling a 6 automatically brings the next available base pawn onto the track without asking the user to choose among 4 visually identical pieces.
-  - If exactly one board pawn can legally move, it prioritizes moving that existing pawn automatically.
-  - If multiple board pawns can legally move, all legal choices are highlighted, allowing the player to make a meaningful decision.
-- **Zero-Move Auto-Pass:** If no legal moves exist, the game displays "No legal moves" and automatically passes the turn after a short delay.
-- **Race Condition Prevention:** The dice and controls are locked during roll animations and automatic moves, guaranteeing deterministic and glitch-free turn progression.
+### 🕹️ Strategic Choice & Smooth Movement
+- **Strategic Decision on 6:** When rolling a 6 with pawns waiting in base and pawns on the track, the player chooses whether to advance a board piece or bring out a new pawn.
+- **Intelligent Single-Move Auto-Execution:** When only one legal strategic move exists, the engine automatically moves the piece, eliminating repetitive clicks.
+- **Configurable Movement Speed:** Choose between **Slow** (350ms), **Normal** (Default, 260ms), and **Fast** (190ms) in Settings, with automatic respect for reduced-motion accessibility preferences.
 - **Captures & Safe Squares:**
-  - Opponents are captured on regular track squares and sent back to base.
-  - Safe squares (starting cells & star cells marked with ★) prevent captures; multiple pieces can safely share them.
-- **Home Lane & Exact Finish:** Pieces must enter their colored home lane; an exact roll is required to finish.
-- **Turn Manager & Bonus Turns:**
-  - Automatic circular turn rotation.
-  - Bonus turns awarded for rolling a 6, capturing an opponent piece, or finishing a piece.
-  - Automatic turn pass when rolling with no legal moves available.
-- **Winning Celebrations:** Triumphant victory modal with multi-angle confetti animations (`canvas-confetti`) and rematch options.
+  - Opponents landing on regular track squares capture enemy pawns and send them back to base.
+  - Star-marked cells (★) and starting squares are safe zones where pieces cannot be captured.
+- **Home Lane & Exact Finish:** Pawns enter their dedicated colored home lane, requiring an exact roll to land on the center trophy.
+- **Bonus Turns:** Awarded automatically on rolling a 6, capturing an opponent, or finishing a pawn.
 
-### 📊 Scoreboard, Manual Adjustments & Undo
-- **Scoreboard:** Real-time piece tracker (In Base, On Board, Finished $X/4$).
-- **Manual Score Adjustments:** Immediate `+1`, `-1`, and `Reset` controls per player (never negative).
-- **Global Score Reset:** Reset all players' scores with confirmation protection.
-- **Full Snapshot Undo:** Instant undo restores board state, pieces, turn, dice, and event log without losing consistency.
+### 📊 Scoreboard, Manual Scoring & Full Undo
+- **Live Scoreboard:** Real-time counters showing pawns *In Base*, *On Board*, and *Finished (X/4)*.
+- **Manual Score Tracking:** Quick `+1`, `-1`, and `Reset` buttons per player.
+- **Global Reset Protection:** Modal confirmation before wiping scoreboard points.
+- **Full Snapshot Undo:** Instant undo functionality that restores board pieces, active player, dice state, and history.
 
-### 🔊 High-Fidelity Synthesized Audio (Web Audio API)
-- Zero external audio assets! Runs 100% offline.
-- Synthesizes realistic 3D dice rattles, piece hop pops, capture booms, safe square chimes, finish arpeggios, and victory fanfare.
-- Persistent sound toggle (persisted in `localStorage`).
-
-### 🛠️ Developer & QA Tools
-- **3D Animated Dice:** Realistic 3D cube with rolling animations.
-- **Dev Dice Simulator:** Built-in override panel to force specific dice values (1–6) for rapid test inspection.
+### 🔊 Synthesized Web Audio API Sound Effects
+- Runs 100% offline with zero external audio assets!
+- Synthesizes realistic 3D dice rattles, pawn hop sounds, capture booms, finish arpeggios, and victory fanfare.
+- Sound toggle persisted in `localStorage`.
 
 ---
 
-## 🏗️ Architecture & Project Structure
+## 📜 Official Gameplay Rules
 
-The project strictly separates the pure game engine and mathematical board definitions from the React UI components:
+1. **Leaving Base:** A pawn requires a roll of **6** to exit its home base pocket and enter the starting square.
+2. **Turn Progression:** Players take turns rolling the dice in clockwise order (Red → Green → Yellow → Blue).
+3. **Extra Turns:** A player earns an immediate extra roll when:
+   - Rolling a **6**
+   - Capturing an opponent's pawn
+   - Successfully reaching the center finish
+4. **Captures:** Landing on an opponent's pawn on any regular track cell captures it and sends it back to its owner's base.
+5. **Safe Squares:** Starting cells and squares marked with a star (★) are safe zones. Pawns on safe squares cannot be captured, and multiple pawns can safely share them.
+6. **Winning:** Pawns must enter their player's colored home lane and land on the center finish with an **exact dice roll**. The first player to finish all **4 pawns** wins the game!
+
+---
+
+## 🛠️ Technologies Used
+
+- **React 19:** Functional components, hooks (`useReducer`, `useMemo`, `useCallback`, `useRef`, `useEffect`).
+- **Vite 6:** Lightning-fast HMR and optimized production build bundling.
+- **Lucide React:** Modern, accessible SVG icons.
+- **Canvas-Confetti:** High-performance celebratory particle effects.
+- **Web Audio API:** Native browser-synthesized audio effects without external MP3 files.
+- **Vitest & React Testing Library:** Unit, geometry, and end-to-end integration test suites.
+- **Puppeteer-Core:** Headless browser automation for crisp high-resolution screenshot generation.
+
+---
+
+## 📁 Project Structure
 
 ```text
 Mini Project - Ludo/
+├── docs/
+│   └── screenshots/              # High-resolution application screenshots
+│       ├── main-game-4-player.png
+│       ├── new-game-setup.png
+│       ├── game-2-player.png
+│       ├── game-3-player.png
+│       ├── gameplay-in-progress.png
+│       ├── piece-selection.png
+│       └── winner-screen.png
+│
 ├── public/
-│   └── dice.svg                  # Favicon & vector assets
+│   └── dice.svg                  # Application favicon & vector assets
+│
+├── scripts/
+│   └── captureScreenshots.js     # Puppeteer script for generating documentation screenshots
 │
 ├── src/
-│   ├── components/               # Pure presentation & UI components
+│   ├── components/               # Pure presentation UI components
 │   │   ├── BoardCell.jsx         # 15x15 classic cell with safe stars & start arrows
 │   │   ├── ConfirmModal.jsx      # Confirmation dialog for score resets
-│   │   ├── Dice.jsx              # 3D animated dice with Dev Simulator
-│   │   ├── GameBoard.jsx         # Dual-mode board (Classic 15x15 & Extended SVG)
-│   │   ├── GameControls.jsx      # Undo, Reset All Scores, Rules buttons
-│   │   ├── GameStatus.jsx        # Dynamic turn, roll, and event guidance banner
+│   │   ├── Dice.jsx              # 3D animated dice with pips and roll controls
+│   │   ├── GameBoard.jsx         # Classic 15x15 Ludo board with 4 colored bases
+│   │   ├── GameControls.jsx      # Undo, Reset Scores, and Rules quick actions
+│   │   ├── GameStatus.jsx        # Dynamic turn, roll, and event banner
 │   │   ├── Header.jsx            # Top navbar, badges, sound toggle, new game
-│   │   ├── Piece.jsx             # 3D token piece with crown and stack count
+│   │   ├── Piece.jsx             # 3D contoured pawn piece with realistic shadows
 │   │   ├── PlayerCard.jsx        # Player status, piece counters, and score controls
-│   │   ├── PlayerSetupModal.jsx  # New game modal (2-6 player count & names)
+│   │   ├── PlayerSetupModal.jsx  # New game configuration modal (2-4 players)
 │   │   ├── RecentMoves.jsx       # Event history log
-│   │   ├── RulesModal.jsx        # Comprehensive visual rule guide
-│   │   ├── SettingsModal.jsx     # Rule and audio settings
-│   │   └── WinnerModal.jsx       # Victory celebration and rematch modal
+│   │   ├── RulesModal.jsx        # Complete game rules modal
+│   │   ├── SettingsModal.jsx     # Movement speed and audio settings
+│   │   └── WinnerModal.jsx       # Victory celebration and rematch dialog
 │   │
 │   ├── game/                     # Headless Game Engine
-│   │   ├── constants.js          # Player colors, cell types, default rules
-│   │   ├── boardLayouts.js       # Mathematical 15x15 grid & 6-sector hexagonal geometry
-│   │   ├── movement.js           # Legal move calculations, path tracking, overshoot checks
+│   │   ├── boardLayouts.js       # Mathematical 15x15 grid, cells, and paths
 │   │   ├── captures.js           # Capture logic and safe square validation
-│   │   ├── turnManager.js        # Turn rotations, bonus rolls, winning detection
+│   │   ├── constants.js          # Player colors, cell types, default rules
+│   │   ├── gameEngine.js         # Unified engine exports
 │   │   ├── gameReducer.js        # Predictable state reducer with snapshot undo stack
-│   │   ├── gameUtils.js          # Piece initialization and state factory
-│   │   └── gameEngine.js         # Unified engine exports
+│   │   ├── gameUtils.js          # Piece initialization and game state factory
+│   │   ├── movement.js           # Legal move calculations, path tracking, overshoot checks
+│   │   └── turnManager.js        # Turn rotations, bonus rolls, winning detection
 │   │
 │   ├── hooks/
-│   │   ├── useGame.js            # Game state hook with timer auto-pass
-│   │   ├── useSound.js           # Web Audio API sound synthesizer
-│   │   └── useLocalStorage.js    # Safe persistent storage hook
+│   │   ├── useGame.js            # Main game state hook and animation timer controller
+│   │   ├── useLocalStorage.js    # Persistent settings storage hook
+│   │   └── useSound.js           # Web Audio API sound synthesizer
 │   │
 │   ├── styles/
-│   │   ├── global.css            # Color variables, typography, shadows
-│   │   ├── board.css             # 15x15 CSS Grid, pieces, hexagonal SVG styles
-│   │   ├── components.css        # 3D dice, modals, cards, badges
-│   │   └── responsive.css        # Desktop 3-column, tablet, and mobile layouts
+│   │   ├── board.css             # Board grid layout and realistic 3D pawn styles
+│   │   ├── components.css        # Modals, player cards, dice, buttons, and animations
+│   │   └── global.css            # CSS design tokens, typography, and resets
 │   │
-│   ├── App.jsx                   # Main layout and coordinator
-│   ├── main.jsx                  # React 19 entry point
-│   └── setupTests.js             # Vitest setup
+│   ├── App.jsx                   # Top-level application orchestrator
+│   └── main.jsx                  # React DOM root entrypoint
 │
-├── tests/                        # Vitest automated test suite
-│   ├── board.test.js             # Board dimensions, connectivity, path validation
-│   ├── movement.test.js          # Base exit on 6, step movement, exact finish
-│   ├── captures.test.js          # Captures on track, safe square immunity
-│   ├── turns.test.js             # Turn rotation, bonus rolls on 6/capture/finish
-│   ├── winning.test.js           # 4-piece finish condition and game over
-│   └── scoreboard.test.js        # Manual +/- score adjustments and full undo
+├── tests/                        # Vitest automated test suite (57 tests)
+│   ├── app.integration.test.jsx  # Full UI integration & modal workflow tests
+│   ├── automove.test.js          # Automatic movement and roll-6 decision tests
+│   ├── board.test.js             # 15x15 grid geometry and path connectivity tests
+│   ├── captures.test.js          # Track captures and safe square protection tests
+│   ├── movement.test.js          # Legal move calculations and exact finish tests
+│   ├── pawn.test.jsx             # Pawn rendering and interactive state tests
+│   ├── scoreboard.test.js        # Scoreboard tracking and manual adjustment tests
+│   ├── turns.test.js             # Turn rotations and bonus turn tests
+│   └── winning.test.js           # Winner detection and 4-piece finish tests
 │
-├── index.html                    # Responsive viewport and font preconnects
-├── vite.config.js                # Vite build and test configuration
-└── package.json                  # Dependencies and scripts
+├── package.json
+└── vite.config.js
 ```
-
----
-
-## 🎨 Color Palette
-
-| Player | Color | Hex Code | Border | Background Tint |
-|---|---|---|---|---|
-| **Player 1** | Red | `#EF4444` | `#DC2626` | `#FEE2E2` |
-| **Player 2** | Blue | `#3B82F6` | `#2563EB` | `#DBEAFE` |
-| **Player 3** | Green | `#22C55E` | `#16A34A` | `#DCFCE7` |
-| **Player 4** | Yellow | `#FACC15` | `#CA8A04` | `#FEF9C3` |
-| **Player 5** | Purple | `#A855F7` | `#9333EA` | `#F3E8FF` |
-| **Player 6** | Orange | `#F97316` | `#EA580C` | `#FFEDD5` |
 
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- **Node.js**: v18.0.0 or higher (Tested on Node v24.21.0)
+
+- **Node.js**: v18.0.0 or higher
 - **npm**: v9.0.0 or higher
 
 ### Installation
 
-1. Navigate to the project directory:
+1. Clone the repository:
    ```bash
-   cd "Mini Project - Ludo"
+   git clone https://github.com/VinitSurve/ludo.git
+   cd ludo
    ```
 
 2. Install dependencies:
@@ -152,24 +220,30 @@ Mini Project - Ludo/
    npm install
    ```
 
-### Running Development Server
+### Running Locally
 
-Start the local Vite development server:
+Start the Vite development server:
 ```bash
 npm run dev
 ```
-Open your browser at `http://localhost:5173/`.
 
-### Running Automated Tests
+Open your browser and navigate to `http://localhost:5173/`.
 
-Run the full Vitest suite (47 tests):
+### Running Tests
+
+Execute the complete Vitest test suite:
 ```bash
-npm run test
+npm test
+```
+
+To run tests in watch mode:
+```bash
+npm run test:watch
 ```
 
 ### Building for Production
 
-Compile optimized production assets:
+Compile and bundle the production-ready application:
 ```bash
 npm run build
 ```
@@ -181,39 +255,15 @@ npm run preview
 
 ---
 
-## 🧪 Automated Test Results
+## 🔮 Realistic Future Improvements
 
-The project includes 47 comprehensive Vitest unit and integration tests covering all engine logic, pawn components, and UX scenarios:
-
-| Test Suite | Tests | Result | Coverage |
-|---|---|---|---|
-| `tests/automove.test.js` | 8 passed | ✅ Passed | All 8 prompt scenarios: single move, multiple choices, roll 6 with base pawns, capture/finish auto-moves |
-| `tests/pawn.test.jsx` | 5 passed | ✅ Passed | 3D pawn SVG rendering (head, neck, body, base, shadow), legal pulse, click handlers, stacking |
-| `tests/app.integration.test.jsx` | 5 passed | ✅ Passed | Full App rendering, modal switching (4P to 6P), score adjustments, dev roll auto-moves |
-| `tests/board.test.js` | 5 passed | ✅ Passed | 15×15 dimensions, 52 cells, safe stars, 6-sector geometry |
-| `tests/movement.test.js` | 7 passed | ✅ Passed | Base exit on 6, step advancement, overshoot prevention |
-| `tests/captures.test.js` | 4 passed | ✅ Passed | Track capture, safe square immunity, own-piece safety |
-| `tests/turns.test.js` | 7 passed | ✅ Passed | Circular rotation, 6 roll bonus, capture bonus, auto-pass |
-| `tests/winning.test.js` | 2 passed | ✅ Passed | 4-piece finish detection, GAME_OVER transition |
-| `tests/scoreboard.test.js` | 4 passed | ✅ Passed | Score +/- controls, clamp at 0, snapshot undo |
-| **Total** | **47 passed** | **✅ 100% Pass** | |
+- **Computer AI Opponents:** Add rule-based AI bots with selectable difficulty levels (Easy, Medium, Aggressive) for solo play.
+- **Online Multiplayer:** Add WebRTC peer-to-peer room matchmaking for remote cross-device play.
+- **Custom Board Skins:** Provide alternate board aesthetic themes (e.g. Traditional Wooden Board, Modern Dark Neon, or Royal Marble).
+- **Stat Tracking:** Track player win/loss records across sessions in local storage.
 
 ---
 
-## 📖 Game Rules Summary
+## 📄 License
 
-1. **Starting:** 4 pieces per player start in their home base. Rolling a **6** moves a piece to the start square.
-2. **Movement:** Pieces advance clockwise along the main track by the number on the dice.
-3. **Safe Squares:** Starting squares and Star squares (★) protect pieces from being captured.
-4. **Captures:** Landing on an opponent piece on a non-safe square captures it, sending it back to base and granting an extra turn.
-5. **Bonus Turns:** Awarded for rolling a **6**, capturing an opponent, or finishing a piece.
-6. **Home Lane & Finish:** After a full loop, pieces enter their colored home lane. An exact dice roll is required to land in the center finish.
-7. **Winning:** The first player to bring all 4 pieces into the center finish wins!
-
----
-
-## 📱 Responsive Design
-
-- **Desktop (≥ 1100px):** Balanced 3-column layout (Scoreboard on left, Board centered, Dice & Log on right).
-- **Tablet (768px – 1100px):** 2-column adaptive layout with scoreboard grid.
-- **Mobile (≤ 768px):** Stacked vertical layout, full-width touch-friendly board scaling, compact player cards, accessible dice controls, and zero horizontal overflow.
+This project is created for educational and academic submission purposes.

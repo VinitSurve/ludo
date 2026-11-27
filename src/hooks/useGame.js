@@ -87,27 +87,6 @@ export function useGame(initialPlayerCount = 4, customConfig = {}, onStepMove = 
     }, 700);
   }, [state.isRolling, state.diceRolled, state.isAutoMoving, state.isMovingPiece, state.gameStatus]);
 
-  // Dev override for specific dice roll
-  const devRollDice = useCallback((forcedValue) => {
-    if (
-      state.gameStatus === 'GAME_OVER' ||
-      state.isAutoMoving ||
-      state.isMovingPiece ||
-      state.gameStatus === 'AUTO_MOVING' ||
-      state.gameStatus === 'MOVING' ||
-      isMovingRef.current
-    ) {
-      return;
-    }
-    dispatch({ type: ACTION_TYPES.ROLL_DICE_START });
-    setTimeout(() => {
-      dispatch({
-        type: ACTION_TYPES.SET_DEV_DICE,
-        payload: { diceValue: forcedValue },
-      });
-    }, 280);
-  }, [state.gameStatus, state.isAutoMoving, state.isMovingPiece]);
-
   // Sleep helper that can be cancelled
   const sleep = useCallback((ms) => {
     return new Promise((resolve) => {
@@ -316,7 +295,6 @@ export function useGame(initialPlayerCount = 4, customConfig = {}, onStepMove = 
     movementSpeed,
     setMovementSpeed,
     rollDice,
-    devRollDice,
     movePiece,
     passTurn,
     adjustScore,

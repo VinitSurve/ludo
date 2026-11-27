@@ -36,7 +36,6 @@ export function App() {
     movementSpeed,
     setMovementSpeed,
     rollDice,
-    devRollDice,
     movePiece,
     passTurn,
     adjustScore,
@@ -80,14 +79,21 @@ export function App() {
     rollDice();
   };
 
-  const handleDevRollDice = (forcedValue) => {
-    playDiceRoll();
-    devRollDice(forcedValue);
-  };
-
   const handlePieceClick = (pieceId) => {
     movePiece(pieceId);
   };
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.__LUDO_APP__ = {
+        state,
+        startNewGame,
+        rollDice,
+        movePiece,
+        setShowSetupModal,
+      };
+    }
+  }, [state, startNewGame, rollDice, movePiece]);
 
   // Confirm Reset All Scores
   const handlePromptResetAllScores = () => {
@@ -181,7 +187,6 @@ export function App() {
             diceRolled={state.diceRolled}
             activePlayer={activePlayer}
             onRoll={handleRollDice}
-            onDevRoll={handleDevRollDice}
             canRoll={!state.diceRolled && !state.isRolling && !state.isAutoMoving && !state.isMovingPiece && state.gameStatus === 'WAITING_ROLL'}
             hasBaseAction={state.hasBaseAction}
             basePieceIdToEnter={state.basePieceIdToEnter}

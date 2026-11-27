@@ -32,7 +32,6 @@ export const ACTION_TYPES = {
   RESET_ALL_SCORES: 'RESET_ALL_SCORES',
   UNDO_MOVE: 'UNDO_MOVE',
   REMATCH: 'REMATCH',
-  SET_DEV_DICE: 'SET_DEV_DICE',
 };
 
 // Snapshot state for Undo
@@ -528,14 +527,6 @@ export function gameReducer(state, action) {
           ...state.gameHistory,
         ].slice(0, 50),
       };
-    }
-
-    case ACTION_TYPES.SET_DEV_DICE: {
-      // Direct dice roll set for testing/development
-      return gameReducer(state, {
-        type: ACTION_TYPES.ROLL_DICE_COMPLETE,
-        payload: { diceValue: action.payload.diceValue },
-      });
     }
 
     default:

@@ -50,7 +50,7 @@ export function createInitialGameState(playerCount = 4, customConfig = {}) {
   const scores = {};
 
   players.forEach((p) => {
-    pieces[p.id] = initializePlayerPieces(p, boardMode);
+    pieces[p.id] = customConfig.pieces?.[p.id] || initializePlayerPieces(p);
     scores[p.id] = customConfig.scores?.[p.id] ?? 0;
   });
 
@@ -63,23 +63,23 @@ export function createInitialGameState(playerCount = 4, customConfig = {}) {
     playerCount,
     boardMode,
     players,
-    currentPlayerIndex: 0,
-    diceValue: null,
-    diceRolled: false,
+    currentPlayerIndex: customConfig.currentPlayerIndex ?? 0,
+    diceValue: customConfig.diceValue ?? null,
+    diceRolled: customConfig.diceRolled ?? false,
     isRolling: false,
     consecutiveSixes: 0,
     pieces,
-    legalMoves: [],
+    legalMoves: customConfig.legalMoves || [],
     autoMovePieceId: null,
     isAutoMoving: false,
-    hasBaseAction: false,
-    basePieceIdToEnter: null,
+    hasBaseAction: customConfig.hasBaseAction ?? false,
+    basePieceIdToEnter: customConfig.basePieceIdToEnter ?? null,
     isMovingPiece: false,
     movingPieceId: null,
     movingPieceInfo: null,
     preMoveSnapshot: null,
-    gameStatus: 'WAITING_ROLL',
-    winner: null,
+    gameStatus: customConfig.gameStatus || 'WAITING_ROLL',
+    winner: customConfig.winner || null,
     rules,
     scores,
     gameHistory: [

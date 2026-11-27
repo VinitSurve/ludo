@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Dices, Sparkles } from 'lucide-react';
 import { PLAYER_COLORS } from '../game/constants';
 
@@ -8,13 +8,11 @@ export function Dice({
   diceRolled = false,
   activePlayer,
   onRoll,
-  onDevRoll,
   canRoll = true,
   hasBaseAction = false,
   basePieceIdToEnter = null,
   onPieceClick = null,
 }) {
-  const [showDevPanel, setShowDevPanel] = useState(false);
   const colorCfg = PLAYER_COLORS[activePlayer?.colorKey] || PLAYER_COLORS.red;
 
   const displayValue = diceValue || 1;
@@ -105,36 +103,6 @@ export function Dice({
           <span>Bring a Pawn Out</span>
         </button>
       )}
-
-      {/* Dev / Test Dice Simulator Toggle */}
-      <div className="dev-dice-box">
-        <div className="dev-dice-title">
-          <span>Dev Dice Simulator</span>
-          <button
-            type="button"
-            onClick={() => setShowDevPanel((p) => !p)}
-            style={{ color: '#3B82F6', fontSize: '0.72rem', cursor: 'pointer', fontWeight: 700 }}
-          >
-            {showDevPanel ? 'Hide' : 'Show'}
-          </button>
-        </div>
-
-        {showDevPanel && (
-          <div className="dev-dice-buttons">
-            {[1, 2, 3, 4, 5, 6].map((num) => (
-              <button
-                key={`dev-${num}`}
-                type="button"
-                className="btn-dev-num"
-                onClick={() => onDevRoll(num)}
-                title={`Force roll ${num}`}
-              >
-                {num}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
     </div>
   );
 }
