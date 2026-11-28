@@ -6,7 +6,6 @@ import { GameStatus } from './components/GameStatus';
 import { GameBoard } from './components/GameBoard';
 import { PlayerCard } from './components/PlayerCard';
 import { Dice } from './components/Dice';
-import { GameControls } from './components/GameControls';
 import { RecentMoves } from './components/RecentMoves';
 import { PlayerSetupModal } from './components/PlayerSetupModal';
 import { RulesModal } from './components/RulesModal';
@@ -37,7 +36,6 @@ export function App() {
     rollDice,
     movePiece,
     passTurn,
-    undoMove,
     startNewGame,
     rematch,
   } = useGame(4, {}, playPieceMove);
@@ -130,12 +128,6 @@ export function App() {
               />
             ))}
           </div>
-
-          {/* Controls: Undo */}
-          <GameControls
-            canUndo={state.undoStack.length > 0}
-            onUndo={undoMove}
-          />
         </div>
 
         {/* Center Column: The Central Ludo Board */}

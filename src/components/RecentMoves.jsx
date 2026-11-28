@@ -1,5 +1,5 @@
 import React from 'react';
-import { History, Swords, Star, Trophy, RotateCcw, ArrowRight, Zap } from 'lucide-react';
+import { History, Swords, Star, Trophy, ArrowRight, Zap } from 'lucide-react';
 
 export function RecentMoves({ history = [] }) {
   const getEventIcon = (type) => {
@@ -10,8 +10,6 @@ export function RecentMoves({ history = [] }) {
         return <Star size={14} className="text-yellow-500" />;
       case 'WIN':
         return <Trophy size={14} className="text-green-500" />;
-      case 'UNDO':
-        return <RotateCcw size={14} className="text-blue-500" />;
       case 'AUTO_MOVE':
         return <Zap size={14} className="text-amber-500" />;
       default:

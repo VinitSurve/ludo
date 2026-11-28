@@ -257,12 +257,6 @@ export function useGame(initialPlayerCount = 4, customConfig = {}, onStepMove = 
     dispatch({ type: ACTION_TYPES.RESET_ALL_SCORES });
   }, []);
 
-  // Undo Move
-  const undoMove = useCallback(() => {
-    if (isMovingRef.current) return;
-    dispatch({ type: ACTION_TYPES.UNDO_MOVE });
-  }, []);
-
   // Start New Game
   const startNewGame = useCallback((playerCount, newConfig) => {
     if (stepTimeoutRef.current) clearTimeout(stepTimeoutRef.current);
@@ -300,7 +294,6 @@ export function useGame(initialPlayerCount = 4, customConfig = {}, onStepMove = 
     adjustScore,
     resetPlayerScore,
     resetAllScores,
-    undoMove,
     startNewGame,
     rematch,
   };

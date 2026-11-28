@@ -119,7 +119,6 @@ export function SettingsModal({
               <div>✔ Bonus turn on capture: <strong>Enabled</strong></div>
               <div>✔ Safe squares protection: <strong>Enabled</strong></div>
               <div>✔ Exact dice roll for finish: <strong>Enabled</strong></div>
-              <div>✔ Full snapshot state undo: <strong>Enabled</strong></div>
             </div>
           </div>
         </div>

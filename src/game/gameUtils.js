@@ -77,7 +77,6 @@ export function createInitialGameState(playerCount = 4, customConfig = {}) {
     isMovingPiece: false,
     movingPieceId: null,
     movingPieceInfo: null,
-    preMoveSnapshot: null,
     gameStatus: customConfig.gameStatus || 'WAITING_ROLL',
     winner: customConfig.winner || null,
     rules,
@@ -91,6 +90,5 @@ export function createInitialGameState(playerCount = 4, customConfig = {}) {
       },
     ],
     lastEvent: null,
-    undoStack: [],
   };
 }

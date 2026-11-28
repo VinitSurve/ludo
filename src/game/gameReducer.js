@@ -30,31 +30,8 @@ export const ACTION_TYPES = {
   ADJUST_SCORE: 'ADJUST_SCORE',
   RESET_PLAYER_SCORE: 'RESET_PLAYER_SCORE',
   RESET_ALL_SCORES: 'RESET_ALL_SCORES',
-  UNDO_MOVE: 'UNDO_MOVE',
   REMATCH: 'REMATCH',
 };
-
-// Snapshot state for Undo
-function createSnapshot(state) {
-  return {
-    players: JSON.parse(JSON.stringify(state.players)),
-    currentPlayerIndex: state.currentPlayerIndex,
-    diceValue: state.diceValue,
-    diceRolled: state.diceRolled,
-    consecutiveSixes: state.consecutiveSixes,
-    pieces: JSON.parse(JSON.stringify(state.pieces)),
-    legalMoves: [...state.legalMoves],
-    autoMovePieceId: state.autoMovePieceId,
-    isAutoMoving: state.isAutoMoving,
-    hasBaseAction: state.hasBaseAction,
-    basePieceIdToEnter: state.basePieceIdToEnter,
-    gameStatus: state.gameStatus,
-    winner: state.winner ? { ...state.winner } : null,
-    scores: { ...state.scores },
-    gameHistory: [...state.gameHistory],
-    lastEvent: state.lastEvent ? { ...state.lastEvent } : null,
-  };
-}
 
 export function gameReducer(state, action) {
   switch (action.type) {
@@ -208,7 +185,6 @@ export function gameReducer(state, action) {
         isMovingPiece: false,
         movingPieceId: null,
         movingPieceInfo: null,
-        preMoveSnapshot: null,
         legalMoves: [],
         gameStatus: 'WAITING_ROLL',
       };
@@ -222,14 +198,11 @@ export function gameReducer(state, action) {
 
       if (!targetPiece) return state;
 
-      const preMoveSnapshot = createSnapshot(state);
-
       return {
         ...state,
         isMovingPiece: true,
         movingPieceId: pieceId,
         gameStatus: 'MOVING',
-        preMoveSnapshot,
         movingPieceInfo: {
           pieceId,
           originalStep: targetPiece.step,
@@ -286,9 +259,6 @@ export function gameReducer(state, action) {
       ) {
         return state;
       }
-
-      // Save snapshot for Undo (use pre-saved snapshot if intermediate stepping occurred)
-      const undoSnapshot = state.preMoveSnapshot || createSnapshot(state);
 
       // Check if original starting step/state was recorded before intermediate steps
       const overrideStart = state.movingPieceInfo?.pieceId === pieceId
@@ -371,10 +341,8 @@ export function gameReducer(state, action) {
           isMovingPiece: false,
           movingPieceId: null,
           movingPieceInfo: null,
-          preMoveSnapshot: null,
           legalMoves: [],
           lastEvent: { type: 'WIN', message: winMsg },
-          undoStack: [undoSnapshot, ...state.undoStack].slice(0, 20),
           gameHistory: [
             { id: Date.now(), timestamp: Date.now(), type: 'WIN', message: winMsg },
             ...state.gameHistory,
@@ -422,11 +390,9 @@ export function gameReducer(state, action) {
           isMovingPiece: false,
           movingPieceId: null,
           movingPieceInfo: null,
-          preMoveSnapshot: null,
           legalMoves: [],
           gameStatus: 'WAITING_ROLL',
           lastEvent: { type: 'EXTRA_TURN', message: bonusMsg },
-          undoStack: [undoSnapshot, ...state.undoStack].slice(0, 20),
           gameHistory: [
             { id: Date.now() + 3, timestamp: Date.now(), type: 'BONUS', message: bonusMsg },
             ...newHistoryEntries,
@@ -451,12 +417,10 @@ export function gameReducer(state, action) {
         isMovingPiece: false,
         movingPieceId: null,
         movingPieceInfo: null,
-        preMoveSnapshot: null,
         consecutiveSixes: 0,
         legalMoves: [],
         gameStatus: 'WAITING_ROLL',
         lastEvent: { type: 'MOVE', message: moveMsg },
-        undoStack: [undoSnapshot, ...state.undoStack].slice(0, 20),
         gameHistory: [
           ...newHistoryEntries,
           ...state.gameHistory,
@@ -496,21 +460,6 @@ export function gameReducer(state, action) {
       return {
         ...state,
         scores: resetScores,
-      };
-    }
-
-    case ACTION_TYPES.UNDO_MOVE: {
-      if (state.undoStack.length === 0) return state;
-      const [previousState, ...remainingStack] = state.undoStack;
-      return {
-        ...state,
-        ...previousState,
-        undoStack: remainingStack,
-        lastEvent: { type: 'UNDO', message: 'Last move was undone.' },
-        gameHistory: [
-          { id: Date.now(), timestamp: Date.now(), type: 'UNDO', message: 'Move undone by player.' },
-          ...state.gameHistory,
-        ].slice(0, 50),
       };
     }
 

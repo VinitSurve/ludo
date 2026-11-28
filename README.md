@@ -84,9 +84,8 @@ A 3-player configuration utilizing Red, Green, and Yellow quadrants with balance
 - **Home Lane & Exact Finish:** Pawns enter their dedicated colored home lane, requiring an exact roll to land on the center trophy.
 - **Bonus Turns:** Awarded automatically on rolling a 6, capturing an opponent, or finishing a pawn.
 
-### 📊 Scoreboard & Full Undo
+### 📊 Live Scoreboard Tracking
 - **Live Scoreboard:** Real-time counters showing pawns *In Base*, *On Board*, and *Finished (X/4)*.
-- **Full Snapshot Undo:** Instant undo functionality that restores board pieces, active player, dice state, and history.
 
 ### 🔊 Synthesized Web Audio API Sound Effects
 - Runs 100% offline with zero external audio assets!
@@ -146,7 +145,6 @@ Mini Project - Ludo/
 │   │   ├── BoardCell.jsx         # 15x15 classic cell with safe stars & start arrows
 │   │   ├── Dice.jsx              # 3D animated dice with pips and roll controls
 │   │   ├── GameBoard.jsx         # Classic 15x15 Ludo board with 4 colored bases
-│   │   ├── GameControls.jsx      # Undo move control
 │   │   ├── GameStatus.jsx        # Dynamic turn, roll, and event banner
 │   │   ├── Header.jsx            # Top navbar, badges, sound toggle, new game
 │   │   ├── Piece.jsx             # 3D contoured pawn piece with realistic shadows
@@ -162,7 +160,7 @@ Mini Project - Ludo/
 │   │   ├── captures.js           # Capture logic and safe square validation
 │   │   ├── constants.js          # Player colors, cell types, default rules
 │   │   ├── gameEngine.js         # Unified engine exports
-│   │   ├── gameReducer.js        # Predictable state reducer with snapshot undo stack
+│   │   ├── gameReducer.js        # Predictable state reducer
 │   │   ├── gameUtils.js          # Piece initialization and game state factory
 │   │   ├── movement.js           # Legal move calculations, path tracking, overshoot checks
 │   │   └── turnManager.js        # Turn rotations, bonus rolls, winning detection
@@ -187,7 +185,7 @@ Mini Project - Ludo/
 │   ├── captures.test.js          # Track captures and safe square protection tests
 │   ├── movement.test.js          # Legal move calculations and exact finish tests
 │   ├── pawn.test.jsx             # Pawn rendering and interactive state tests
-│   ├── scoreboard.test.js        # Scoreboard tracking and snapshot undo tests
+│   ├── scoreboard.test.js        # Scoreboard piece tracking tests
 │   ├── turns.test.js             # Turn rotations and bonus turn tests
 │   └── winning.test.js           # Winner detection and 4-piece finish tests
 │
